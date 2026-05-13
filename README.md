@@ -10,15 +10,43 @@ Pounce is a Codex-native dependency security layer that vets exact package relea
 
 ## Quick start
 
-Install from the GitHub-backed Codex marketplace:
+Add the GitHub-backed Pounce marketplace to Codex:
 
 ```bash
 codex plugin marketplace add therajsharma/Pounce --ref main
 ```
 
-Then open a new Codex session, run `/plugins`, choose `Local Security Plugins`, and install `Pounce`.
+Then install and enable the plugin inside Codex:
 
-After Pounce is installed and enabled, its first hook invocation bootstraps the active workspace automatically: it adds the managed `AGENTS.md` policy, writes `.codex/hooks.json`, and enables `codex_hooks = true` in `.codex/config.toml`. Users do not need to clone this repository or run `install_local.py` for normal Marketplace installs.
+1. Open or restart Codex.
+2. Run `/plugins`.
+3. Choose `Local Security Plugins`.
+4. Install `Pounce`.
+5. Open a Codex session in the repository you want protected.
+
+On the first prompt in that repository, Pounce bootstraps the workspace automatically. It writes:
+
+- `AGENTS.md` with the managed Pounce policy
+- `.codex/hooks.json` with the Pounce `UserPromptSubmit`, `PreToolUse`, and `Stop` hooks
+- `.codex/config.toml` with `codex_hooks = true`
+
+Users who install through the Codex Marketplace do not need to clone this repository or run `install_local.py`.
+
+Ask Codex to confirm the install:
+
+```text
+Show the Pounce dashboard for this workspace
+```
+
+A fully bootstrapped workspace reports `Protection status: protected`.
+
+For a stable team rollout, publish a release tag and install that tag instead of `main`:
+
+```bash
+codex plugin marketplace add therajsharma/Pounce --ref v0.1.0
+```
+
+## Local development
 
 For local development from this repository:
 
@@ -26,12 +54,6 @@ For local development from this repository:
 python3 plugins/pounce/scripts/install_local.py --workspace "$(pwd)"
 python3 plugins/pounce/scripts/pounce_demo.py
 pytest -q
-```
-
-Then in Codex:
-
-```text
-Show the Pounce dashboard for this workspace
 ```
 
 ## What it protects
