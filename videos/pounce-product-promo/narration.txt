@@ -1,0 +1,7 @@
+Dependency changes shouldn't quietly become repo state.
+
+Pounce checks exact releases before the install, watches the shell while agents work, and keeps every allow, warn, and block verdict attached to the same workspace.
+
+Feed trust stays visible.
+
+Risky packages stop before they settle.

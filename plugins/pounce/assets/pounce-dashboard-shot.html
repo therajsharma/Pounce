@@ -3,281 +3,2233 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Pounce Dashboard</title>
+    <title>Pounce - Dependency Guard Dashboard</title>
+    <meta
+      name="description"
+      content="Pounce is a Codex-native dependency guard dashboard for exact release vetting, hook enforcement, feed trust, and workspace protection state."
+    />
+    <meta name="theme-color" content="#17201f" />
+    <meta property="og:title" content="Pounce - Dependency Guard Dashboard" />
+    <meta
+      property="og:description"
+      content="A local-first dependency security surface for agentic coding workflows."
+    />
+    <meta property="og:image" content="pounce-dashboard.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" type="image/svg+xml" href="pounce-icon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
     <style>
       :root {
         color-scheme: light;
-        --bg: #f5f1ea;
-        --panel: #fffdfa;
-        --panel-border: #d6c8ba;
-        --text: #231f1b;
-        --muted: #5e554c;
-        --accent: #c2410c;
-        --good: #0f766e;
-        --warn: #92400e;
-        --shadow: 0 18px 48px rgba(35, 31, 27, 0.08);
+        --bg: #f7f8f4;
+        --bg-soft: #eef4f7;
+        --surface: #ffffff;
+        --surface-soft: #f6f2ea;
+        --surface-strong: #17201f;
+        --ink: #18181b;
+        --ink-soft: #3f4749;
+        --muted: #69726f;
+        --line: rgba(36, 47, 50, 0.14);
+        --line-strong: rgba(36, 47, 50, 0.24);
+        --accent: #0e7669;
+        --accent-soft: rgba(14, 118, 105, 0.12);
+        --allow: #287665;
+        --allow-soft: rgba(40, 118, 101, 0.11);
+        --warn: #a56b1d;
+        --warn-soft: rgba(165, 107, 29, 0.13);
+        --block: #a84638;
+        --block-soft: rgba(168, 70, 56, 0.12);
+        --steel: #365f73;
+        --steel-soft: rgba(54, 95, 115, 0.12);
+        --focus: rgba(14, 118, 105, 0.46);
+        --shadow: 0 24px 48px -28px rgba(27, 38, 40, 0.42);
+        --ease: cubic-bezier(0.16, 1, 0.3, 1);
       }
 
       * {
         box-sizing: border-box;
       }
 
+      html {
+        scroll-behavior: smooth;
+      }
+
+      ::selection {
+        background: rgba(14, 118, 105, 0.22);
+        color: var(--ink);
+      }
+
       body {
         margin: 0;
-        min-height: 100vh;
+        min-height: 100dvh;
+        overflow-x: hidden;
+        background:
+          linear-gradient(115deg, rgba(14, 118, 105, 0.1), transparent 34%),
+          linear-gradient(47deg, transparent 38%, rgba(168, 70, 56, 0.08) 56%, transparent 74%),
+          linear-gradient(180deg, #ffffff 0%, var(--bg) 44%, #eef4f7 100%);
+        color: var(--ink);
         font-family:
-          Inter,
+          Outfit,
+          Geist,
           ui-sans-serif,
           system-ui,
           -apple-system,
           BlinkMacSystemFont,
           "Segoe UI",
           sans-serif;
-        background:
-          radial-gradient(circle at top left, rgba(194, 65, 12, 0.1), transparent 30%),
-          linear-gradient(180deg, #f9f5ef 0%, var(--bg) 100%);
-        color: var(--text);
       }
 
-      .frame {
-        width: 1280px;
-        margin: 0 auto;
-        padding: 40px 32px;
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          radial-gradient(rgba(27, 38, 40, 0.24) 0.7px, transparent 0.7px),
+          linear-gradient(90deg, transparent, rgba(165, 107, 29, 0.045), transparent);
+        background-size: 22px 22px;
+        opacity: 0.08;
       }
 
-      .window {
-        background: var(--panel);
-        border: 1px solid var(--panel-border);
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      .skip-link {
+        position: fixed;
+        top: 16px;
+        left: 16px;
+        z-index: 5;
+        padding: 10px 14px;
         border-radius: 8px;
-        box-shadow: var(--shadow);
-        overflow: hidden;
+        background: var(--surface-strong);
+        color: #f8fafc;
+        font-weight: 800;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-12px);
+        transition:
+          opacity 220ms var(--ease),
+          transform 220ms var(--ease);
       }
 
-      .titlebar {
+      .skip-link:focus {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0);
+      }
+
+      .page-shell {
+        width: min(100% - 64px, 1400px);
+        margin: 0 auto;
+        padding-bottom: 72px;
+      }
+
+      .glass {
+        border: 1px solid rgba(255, 255, 255, 0.55);
+        background: rgba(255, 255, 255, 0.72);
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.72),
+          0 18px 42px -34px rgba(27, 38, 40, 0.55);
+        backdrop-filter: blur(18px);
+      }
+
+      .security-header {
+        position: sticky;
+        top: 12px;
+        z-index: 2;
+        margin-top: 12px;
+        overflow: hidden;
+        border-radius: 8px;
+      }
+
+      .advisory-bar {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 18px;
+        align-items: center;
+        padding: 9px 14px;
+        border-bottom: 1px solid var(--line);
+        background:
+          linear-gradient(90deg, rgba(23, 32, 31, 0.96), rgba(34, 49, 52, 0.94) 62%, rgba(52, 36, 31, 0.94));
+        color: #f8fafc;
+      }
+
+      .advisory-link {
+        display: inline-flex;
+        min-width: 0;
+        align-items: center;
+        gap: 10px;
+        color: rgba(248, 250, 252, 0.82);
+        font-size: 0.78rem;
+      }
+
+      .advisory-type {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        color: #c8eee7;
+        font-weight: 900;
+        text-transform: none;
+      }
+
+      .advisory-type::before {
+        content: "";
+        width: 7px;
+        height: 7px;
+        border-radius: 999px;
+        background: var(--accent);
+      }
+
+      .advisory-copy {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .utility-links {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        color: rgba(248, 250, 252, 0.74);
+        font-size: 0.76rem;
+        font-weight: 800;
+      }
+
+      .utility-links a {
+        transition:
+          color 240ms var(--ease),
+          transform 240ms var(--ease);
+      }
+
+      .utility-links a:hover {
+        color: #ffffff;
+        transform: translateY(-1px);
+      }
+
+      .site-nav {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 16px;
-        padding: 16px 20px;
-        border-bottom: 1px solid rgba(214, 200, 186, 0.9);
-        background: rgba(255, 253, 250, 0.95);
-      }
-
-      .traffic {
-        display: flex;
-        gap: 8px;
-      }
-
-      .traffic span {
-        width: 12px;
-        height: 12px;
-        border-radius: 999px;
-        display: inline-block;
-      }
-
-      .traffic span:nth-child(1) { background: #ef4444; }
-      .traffic span:nth-child(2) { background: #f59e0b; }
-      .traffic span:nth-child(3) { background: #10b981; }
-
-      .title {
-        font-size: 14px;
-        font-weight: 600;
-        color: var(--muted);
-      }
-
-      .content {
-        padding: 28px;
-        display: grid;
-        grid-template-columns: 1.1fr 0.9fr;
         gap: 20px;
+        padding: 14px;
       }
 
-      .panel {
-        border: 1px solid rgba(214, 200, 186, 0.9);
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+      }
+
+      .brand-mark {
+        display: grid;
+        width: 42px;
+        height: 42px;
+        place-items: center;
+        overflow: hidden;
+        border: 1px solid var(--line);
         border-radius: 8px;
-        padding: 20px;
-        background: #fffdfb;
+        background:
+          radial-gradient(circle at 24% 18%, rgba(255, 255, 255, 0.8), transparent 24%),
+          linear-gradient(145deg, #e9f5f2, #d6e6ea);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.92);
       }
 
-      .panel h1,
-      .panel h2 {
-        margin: 0 0 14px;
+      .brand-mark svg {
+        width: 30px;
+        height: 30px;
+      }
+
+      .brand-text strong {
+        display: block;
+        font-size: 1.04rem;
+        line-height: 1;
         letter-spacing: 0;
       }
 
-      .panel h1 {
-        font-size: 26px;
-        line-height: 1.1;
-      }
-
-      .panel h2 {
-        font-size: 16px;
+      .brand-text span {
+        display: block;
+        margin-top: 5px;
         color: var(--muted);
+        font-size: 0.74rem;
+        letter-spacing: 0;
+        text-transform: none;
       }
 
-      .meta {
+      .nav-links {
+        display: grid;
+        grid-template-columns: repeat(5, max-content);
+        align-items: center;
+        gap: 4px;
+        color: var(--ink-soft);
+      }
+
+      .nav-links a {
+        display: grid;
+        gap: 2px;
+        padding: 8px 10px;
+        border-radius: 8px;
+        font-size: 0.86rem;
+        font-weight: 800;
+        transition:
+          color 260ms var(--ease),
+          transform 260ms var(--ease),
+          background 260ms var(--ease);
+      }
+
+      .nav-links a small {
+        color: var(--muted);
+        font-size: 0.68rem;
+        font-weight: 700;
+      }
+
+      .nav-links a:hover {
+        background: rgba(54, 95, 115, 0.08);
+        color: var(--ink);
+        transform: translateY(-1px);
+      }
+
+      .nav-links a[aria-current="true"] {
+        background: rgba(14, 118, 105, 0.1);
+        color: var(--ink);
+      }
+
+      .nav-actions {
         display: flex;
-        flex-wrap: wrap;
+        align-items: center;
         gap: 10px;
-        margin-bottom: 18px;
       }
 
-      .badge {
+      .nav-link-minor {
+        color: var(--ink-soft);
+        font-size: 0.84rem;
+        font-weight: 800;
+        transition:
+          color 260ms var(--ease),
+          transform 260ms var(--ease);
+      }
+
+      .nav-link-minor:hover {
+        color: var(--ink);
+        transform: translateY(-1px);
+      }
+
+      .magnetic-button {
+        --mx: 0px;
+        --my: 0px;
+        transform: translate3d(var(--mx), var(--my), 0);
+        transition:
+          transform 360ms var(--ease),
+          border-color 260ms var(--ease),
+          background 260ms var(--ease);
+        will-change: transform;
+      }
+
+      .magnetic-button:active {
+        transform: translate3d(var(--mx), calc(var(--my) + 1px), 0) scale(0.98);
+      }
+
+      .magnetic-button:hover {
+        border-color: rgba(14, 118, 105, 0.34);
+        background: rgba(255, 255, 255, 0.92);
+        box-shadow: 0 18px 34px -24px rgba(14, 118, 105, 0.46);
+      }
+
+      .magnetic-button.primary:hover {
+        background: linear-gradient(135deg, #1b2d2c, #244044);
+      }
+
+      .hero {
+        display: grid;
+        min-height: auto;
+        grid-template-columns: minmax(0, 0.92fr) minmax(460px, 1.08fr);
+        gap: clamp(34px, 6vw, 86px);
+        align-items: start;
+        padding: 64px 0 52px;
+      }
+
+      .eyebrow {
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        padding: 7px 10px;
-        border-radius: 8px;
-        background: rgba(194, 65, 12, 0.08);
+        gap: 10px;
+        margin: 0 0 22px;
         color: var(--accent);
-        font-size: 13px;
-        font-weight: 600;
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0;
+        text-transform: none;
       }
 
-      .badge.good {
-        background: rgba(15, 118, 110, 0.1);
-        color: var(--good);
+      .pulse-dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 999px;
+        background: var(--accent);
+        box-shadow: 0 0 0 0 rgba(14, 118, 105, 0.24);
+        animation: breathe 2.8s var(--ease) infinite;
       }
 
-      ul {
+      #live-check .eyebrow {
+        color: var(--warn);
+      }
+
+      #live-check .pulse-dot {
+        background: var(--warn);
+        box-shadow: 0 0 0 0 rgba(165, 107, 29, 0.24);
+      }
+
+      #intel .eyebrow {
+        color: var(--steel);
+      }
+
+      #intel .pulse-dot {
+        background: var(--steel);
+        box-shadow: 0 0 0 0 rgba(54, 95, 115, 0.24);
+      }
+
+      .hero h1 {
+        max-width: 720px;
         margin: 0;
-        padding-left: 18px;
+        font-size: 4.35rem;
+        line-height: 0.95;
+        letter-spacing: 0;
+        text-wrap: balance;
+      }
+
+      .hero-copy {
+        max-width: 63ch;
+        margin: 20px 0 0;
         color: var(--muted);
+        font-size: 1.08rem;
+        line-height: 1.7;
+        text-wrap: pretty;
       }
 
-      li {
-        margin: 0 0 10px;
-        line-height: 1.5;
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 24px;
       }
 
-      code {
+      .magnetic-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        min-height: 46px;
+        padding: 0 18px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--surface);
+        color: var(--ink);
+        font-weight: 700;
+        box-shadow: 0 14px 28px -22px rgba(27, 38, 40, 0.6);
+      }
+
+      .magnetic-button.primary {
+        border-color: rgba(14, 118, 105, 0.44);
+        background: linear-gradient(135deg, var(--surface-strong), #203336);
+        color: #f8fafc;
+      }
+
+      .magnetic-button.nav-cta {
+        min-height: 40px;
+        padding: 0 15px;
+      }
+
+      .magnetic-button.nav-cta-secondary {
+        min-height: 40px;
+        padding: 0 14px;
+        border-color: rgba(54, 95, 115, 0.2);
+        background: rgba(255, 255, 255, 0.72);
+      }
+
+      .command-strip {
+        display: grid;
+        grid-template-columns: 22px minmax(0, 1fr);
+        gap: 12px;
+        max-width: 650px;
+        margin-top: 24px;
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background:
+          linear-gradient(90deg, rgba(238, 244, 247, 0.76), rgba(250, 246, 237, 0.72)),
+          rgba(255, 255, 255, 0.62);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+      }
+
+      .prompt-stack {
+        display: grid;
+        gap: 5px;
+        min-width: 0;
+        color: var(--ink-soft);
         font-family:
-          "SFMono-Regular",
+          "Geist Mono",
+          "IBM Plex Mono",
+          "JetBrains Mono",
           ui-monospace,
           SFMono-Regular,
           Menlo,
           monospace;
-        font-size: 0.94em;
-        background: rgba(35, 31, 27, 0.05);
-        border-radius: 6px;
-        padding: 2px 6px;
-        color: var(--text);
+        font-size: 0.8rem;
       }
 
-      .verdicts {
+      .prompt-stack code {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .prompt-symbol {
+        color: var(--steel);
+        font-family:
+          "Geist Mono",
+          "IBM Plex Mono",
+          "JetBrains Mono",
+          ui-monospace,
+          SFMono-Regular,
+          Menlo,
+          monospace;
+        font-weight: 800;
+      }
+
+      .hero-visual {
+        position: relative;
+        display: grid;
+        gap: 14px;
+      }
+
+      .console-shell {
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(247, 248, 244, 0.78)),
+          var(--surface);
+        box-shadow: var(--shadow);
+      }
+
+      .console-topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--line);
+        background: linear-gradient(90deg, rgba(238, 244, 247, 0.84), rgba(250, 246, 237, 0.78));
+      }
+
+      .window-lines {
+        display: flex;
+        gap: 6px;
+      }
+
+      .window-lines span {
+        display: block;
+        width: 18px;
+        height: 2px;
+        border-radius: 999px;
+        background: rgba(24, 32, 30, 0.32);
+      }
+
+      .console-title {
+        color: var(--muted);
+        font-size: 0.76rem;
+        font-weight: 800;
+        letter-spacing: 0;
+        text-transform: none;
+      }
+
+      .console-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.22fr) minmax(220px, 0.78fr);
+        min-height: 420px;
+      }
+
+      .guard-panel {
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        gap: 22px;
+        padding: 26px;
+        border-right: 1px solid var(--line);
+      }
+
+      .guard-kicker {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 32px;
+        padding: 0 11px;
+        border: 1px solid rgba(14, 118, 105, 0.22);
+        border-radius: 8px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0;
+        text-transform: none;
+      }
+
+      .guard-panel h2,
+      .module h2,
+      .section-heading h2 {
+        margin: 0;
+        font-size: 2.35rem;
+        line-height: 1;
+        letter-spacing: 0;
+        text-wrap: balance;
+      }
+
+      .guard-panel p,
+      .section-heading p,
+      .module p {
+        margin: 12px 0 0;
+        color: var(--muted);
+        line-height: 1.65;
+        text-wrap: pretty;
+      }
+
+      .scan-route {
+        display: grid;
+        gap: 10px;
+        align-self: center;
+      }
+
+      .route-row {
+        display: grid;
+        grid-template-columns: 96px minmax(0, 1fr) 64px;
+        gap: 12px;
+        align-items: center;
+        padding: 11px 0;
+        border-left: 3px solid transparent;
+        border-top: 1px solid var(--line);
+      }
+
+      .route-row:first-child {
+        border-left-color: var(--allow);
+        padding-left: 12px;
+      }
+
+      .route-row.warn {
+        border-left-color: var(--warn);
+        padding-left: 12px;
+      }
+
+      .route-row.block {
+        border-left-color: var(--block);
+        padding-left: 12px;
+      }
+
+      .route-row:last-child {
+        border-bottom: 1px solid var(--line);
+      }
+
+      .route-row span {
+        color: var(--muted);
+        font-size: 0.76rem;
+        font-weight: 800;
+        letter-spacing: 0;
+        text-transform: none;
+      }
+
+      .route-row strong {
+        overflow: hidden;
+        color: var(--ink);
+        font-family:
+          "Geist Mono",
+          "IBM Plex Mono",
+          "JetBrains Mono",
+          ui-monospace,
+          SFMono-Regular,
+          Menlo,
+          monospace;
+        font-size: 0.85rem;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .route-row em {
+        justify-self: end;
+        color: var(--allow);
+        font-style: normal;
+        font-weight: 800;
+      }
+
+      .route-row.warn em {
+        color: var(--warn);
+      }
+
+      .route-row.block em {
+        color: var(--block);
+      }
+
+      .metric-rail {
+        display: grid;
+        grid-template-columns: 1fr 0.72fr;
+        gap: 10px;
+      }
+
+      .metric {
+        padding-top: 12px;
+        border-top: 1px solid var(--line);
+      }
+
+      .metric span {
+        display: block;
+        color: var(--muted);
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0;
+        text-transform: none;
+      }
+
+      .metric strong {
+        display: block;
+        margin-top: 8px;
+        font-family:
+          "Geist Mono",
+          "IBM Plex Mono",
+          "JetBrains Mono",
+          ui-monospace,
+          SFMono-Regular,
+          Menlo,
+          monospace;
+        font-size: 1.9rem;
+        letter-spacing: 0;
+      }
+
+      .queue-panel {
+        display: grid;
+        grid-template-rows: auto 1fr;
+        gap: 18px;
+        padding: 22px;
+        background:
+          linear-gradient(160deg, rgba(238, 244, 247, 0.92), rgba(250, 246, 237, 0.82)),
+          var(--surface-soft);
+      }
+
+      .queue-panel h3,
+      .stream-title,
+      .form-title {
+        margin: 0;
+        color: var(--ink);
+        font-size: 0.84rem;
+        font-weight: 900;
+        letter-spacing: 0;
+        text-transform: none;
+      }
+
+      .queue-list {
+        display: grid;
+        align-content: center;
+        gap: 10px;
+      }
+
+      .queue-item {
+        display: grid;
+        grid-template-columns: 8px minmax(0, 1fr) auto;
+        gap: 10px;
+        align-items: center;
+        padding: 11px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.76);
+        box-shadow: 0 12px 24px -25px rgba(27, 38, 40, 0.4);
+        transition:
+          transform 520ms var(--ease),
+          border-color 320ms var(--ease);
+      }
+
+      .queue-item.is-active {
+        border-color: rgba(14, 118, 105, 0.38);
+        transform: translateX(-5px);
+      }
+
+      .queue-item.warn {
+        background: linear-gradient(90deg, var(--warn-soft), rgba(255, 255, 255, 0.78));
+      }
+
+      .queue-item.block {
+        background: linear-gradient(90deg, var(--block-soft), rgba(255, 255, 255, 0.78));
+      }
+
+      .queue-item i {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: var(--accent);
+      }
+
+      .queue-item.warn i {
+        background: var(--warn);
+      }
+
+      .queue-item.block i {
+        background: var(--block);
+      }
+
+      .queue-item strong {
+        display: block;
+        overflow: hidden;
+        font-family:
+          "Geist Mono",
+          "IBM Plex Mono",
+          "JetBrains Mono",
+          ui-monospace,
+          SFMono-Regular,
+          Menlo,
+          monospace;
+        font-size: 0.78rem;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .queue-item span {
+        color: var(--muted);
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0;
+        text-transform: none;
+      }
+
+      .stream-band {
+        display: grid;
+        gap: 12px;
+        padding: 14px 0 18px;
+        border-top: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.78);
+      }
+
+      .stream-title {
+        padding: 0 18px;
+        color: var(--muted);
+      }
+
+      .stream-window {
+        overflow: hidden;
+      }
+
+      .stream-track {
+        display: flex;
+        width: max-content;
+        gap: 10px;
+        animation: stream 24s linear infinite;
+      }
+
+      .stream-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        min-height: 42px;
+        padding: 0 13px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--surface);
+        color: var(--ink-soft);
+        font-family:
+          "Geist Mono",
+          "IBM Plex Mono",
+          "JetBrains Mono",
+          ui-monospace,
+          SFMono-Regular,
+          Menlo,
+          monospace;
+        font-size: 0.78rem;
+        white-space: nowrap;
+      }
+
+      .stream-chip b {
+        color: var(--accent);
+      }
+
+      .stream-chip.allow b {
+        color: var(--allow);
+      }
+
+      .stream-chip.warn b {
+        color: var(--warn);
+      }
+
+      .stream-chip.block b,
+      .stream-chip.hook b {
+        color: var(--block);
+      }
+
+      .stream-chip.trust b {
+        color: var(--steel);
+      }
+
+      .floating-proof {
+        display: grid;
+        grid-template-columns: 82px minmax(0, 1fr);
+        gap: 12px;
+        width: min(360px, 86%);
+        margin: -20px 0 0 auto;
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.8);
+        box-shadow: var(--shadow);
+        animation: float 5.4s var(--ease) infinite;
+      }
+
+      .proof-image {
+        aspect-ratio: 1;
+        width: 82px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: linear-gradient(135deg, #eef4f7, #f6f2ea);
+      }
+
+      .proof-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .proof-copy strong {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .proof-copy span {
+        display: block;
+        margin-top: 6px;
+        color: var(--muted);
+        font-size: 0.83rem;
+        line-height: 1.45;
+      }
+
+      .section {
+        padding: clamp(52px, 8vw, 108px) 0;
+      }
+
+      .section-heading {
+        display: grid;
+        grid-template-columns: minmax(0, 0.82fr) minmax(240px, 0.48fr);
+        gap: 34px;
+        align-items: end;
+        margin-bottom: 28px;
+      }
+
+      .section-heading p {
+        margin-top: 0;
+      }
+
+      .workbench {
+        display: grid;
+        grid-template-columns: minmax(0, 1.16fr) minmax(320px, 0.84fr);
+        gap: 18px;
+        align-items: start;
+      }
+
+      .module {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.78);
+        box-shadow: var(--shadow);
+      }
+
+      .check-module {
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(250, 246, 237, 0.72)),
+          var(--surface);
+      }
+
+      .check-module {
+        padding: clamp(22px, 4vw, 34px);
+      }
+
+      .field-stack {
+        display: grid;
+        gap: 8px;
+        margin-top: 24px;
+      }
+
+      .field-stack label {
+        color: var(--ink);
+        font-size: 0.84rem;
+        font-weight: 800;
+      }
+
+      .field-stack input {
+        width: 100%;
+        min-height: 48px;
+        padding: 0 14px;
+        border: 1px solid var(--line-strong);
+        border-radius: 8px;
+        outline: 2px solid transparent;
+        outline-offset: 3px;
+        background: rgba(255, 255, 255, 0.86);
+        color: var(--ink);
+        font-family:
+          "Geist Mono",
+          "IBM Plex Mono",
+          "JetBrains Mono",
+          ui-monospace,
+          SFMono-Regular,
+          Menlo,
+          monospace;
+        transition:
+          border-color 260ms var(--ease),
+          box-shadow 260ms var(--ease);
+      }
+
+      .field-stack input:focus {
+        border-color: rgba(14, 118, 105, 0.58);
+        box-shadow: 0 0 0 4px rgba(14, 118, 105, 0.1);
+      }
+
+      a:focus-visible,
+      button:focus-visible,
+      input:focus-visible {
+        outline: 3px solid var(--focus);
+        outline-offset: 4px;
+      }
+
+      .helper,
+      .field-error {
+        min-height: 18px;
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.82rem;
+      }
+
+      .field-error {
+        display: none;
+        color: var(--block);
+      }
+
+      .field-stack.is-invalid .field-error {
+        display: block;
+      }
+
+      .input-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 10px;
+      }
+
+      .result-box {
+        position: relative;
+        min-height: 154px;
+        margin-top: 20px;
+        padding: 18px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background:
+          linear-gradient(135deg, rgba(238, 244, 247, 0.78), rgba(250, 246, 237, 0.65)),
+          var(--surface-soft);
+      }
+
+      .result-state {
+        display: none;
+        height: 100%;
+      }
+
+      .result-state.is-visible {
+        display: grid;
+        gap: 10px;
+        align-content: center;
+      }
+
+      .empty-state {
+        color: var(--muted);
+      }
+
+      .empty-state svg,
+      .error-state svg,
+      .verdict-state svg {
+        width: 28px;
+        height: 28px;
+        color: var(--accent);
+      }
+
+      .empty-state strong,
+      .error-state strong,
+      .verdict-state strong {
+        display: block;
+        color: var(--ink);
+        font-size: 1rem;
+      }
+
+      .skeleton {
         display: grid;
         gap: 12px;
       }
 
-      .verdict {
-        border: 1px solid rgba(214, 200, 186, 0.9);
+      .skeleton span {
+        display: block;
+        height: 15px;
+        overflow: hidden;
         border-radius: 8px;
-        padding: 14px;
-        background: rgba(255, 255, 255, 0.9);
+        background: rgba(24, 32, 30, 0.1);
       }
 
-      .verdict-head {
-        display: flex;
-        justify-content: space-between;
-        gap: 12px;
-        margin-bottom: 8px;
-        font-size: 13px;
+      .skeleton span::before {
+        content: "";
+        display: block;
+        width: 48%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.72), transparent);
+        animation: shimmer 1.15s var(--ease) infinite;
       }
 
-      .status {
-        font-weight: 700;
+      .skeleton span:nth-child(2) {
+        width: 72%;
+      }
+
+      .skeleton span:nth-child(3) {
+        width: 44%;
+      }
+
+      .verdict-state[data-tone="allow"] svg,
+      .verdict-state[data-tone="allow"] .verdict-label {
+        color: var(--allow);
+      }
+
+      .verdict-state[data-tone="warn"] svg,
+      .verdict-state[data-tone="warn"] .verdict-label {
         color: var(--warn);
       }
 
-      .status.block {
-        color: #b91c1c;
+      .verdict-state[data-tone="block"] svg,
+      .verdict-state[data-tone="block"] .verdict-label {
+        color: var(--block);
       }
 
-      .status.allow {
-        color: var(--good);
+      .verdict-label {
+        font-family:
+          "Geist Mono",
+          "IBM Plex Mono",
+          "JetBrains Mono",
+          ui-monospace,
+          SFMono-Regular,
+          Menlo,
+          monospace;
+        font-size: 0.84rem;
+        font-weight: 900;
+        letter-spacing: 0;
+        text-transform: uppercase;
       }
 
-      .verdict p {
-        margin: 0;
-        font-size: 14px;
+      .timeline-module {
+        padding: 0;
+        overflow: hidden;
+      }
+
+      .timeline-head {
+        padding: 22px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .timeline {
+        display: grid;
+      }
+
+      .timeline-step {
+        display: grid;
+        grid-template-columns: 34px minmax(0, 1fr);
+        gap: 12px;
+        padding: 18px 22px;
+        border-bottom: 1px solid var(--line);
+        animation: reveal 720ms var(--ease) both;
+        animation-delay: calc(var(--step) * 90ms);
+      }
+
+      .timeline-step.step-one {
+        --step: 0;
+      }
+
+      .timeline-step.step-two {
+        --step: 1;
+      }
+
+      .timeline-step.step-three {
+        --step: 2;
+      }
+
+      .timeline-step:last-child {
+        border-bottom: 0;
+      }
+
+      .timeline-step i {
+        display: grid;
+        width: 34px;
+        height: 34px;
+        place-items: center;
+        border: 1px solid rgba(14, 118, 105, 0.25);
+        border-radius: 8px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-style: normal;
+        font-weight: 900;
+      }
+
+      .timeline-step strong {
+        display: block;
+        color: var(--ink);
+        letter-spacing: 0;
+      }
+
+      .timeline-step:nth-child(2) i {
+        border-color: rgba(54, 95, 115, 0.28);
+        background: var(--steel-soft);
+        color: var(--steel);
+      }
+
+      .timeline-step:nth-child(3) i {
+        border-color: rgba(168, 70, 56, 0.28);
+        background: var(--block-soft);
+        color: var(--block);
+      }
+
+      .timeline-step span {
+        display: block;
+        margin-top: 5px;
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .intelligence-grid {
+        display: grid;
+        grid-template-columns: minmax(320px, 0.82fr) minmax(0, 1.18fr);
+        gap: 18px;
+      }
+
+      .source-module {
+        padding: 24px;
+        background:
+          linear-gradient(160deg, rgba(255, 255, 255, 0.92), rgba(238, 244, 247, 0.78)),
+          var(--surface);
+      }
+
+      .source-list {
+        display: grid;
+        gap: 14px;
+        margin-top: 24px;
+      }
+
+      .source-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 16px;
+        align-items: center;
+        padding: 13px 0;
+        border-top: 1px solid var(--line);
+      }
+
+      .source-row strong {
+        display: block;
+      }
+
+      .source-row span {
+        color: var(--muted);
+        font-size: 0.84rem;
+      }
+
+      .source-row code {
+        color: var(--accent);
+        font-family:
+          "Geist Mono",
+          "IBM Plex Mono",
+          "JetBrains Mono",
+          ui-monospace,
+          SFMono-Regular,
+          Menlo,
+          monospace;
+        font-size: 0.78rem;
+      }
+
+      .source-row:nth-child(1) code {
+        color: var(--steel);
+      }
+
+      .source-row:nth-child(2) code {
+        color: var(--warn);
+      }
+
+      .source-row:nth-child(3) code {
+        color: var(--accent);
+      }
+
+      .document-module {
+        position: relative;
+        padding: 24px;
+        overflow: hidden;
+        background:
+          linear-gradient(160deg, rgba(255, 255, 255, 0.92), rgba(250, 246, 237, 0.78)),
+          var(--surface);
+      }
+
+      .document-sheet {
+        margin-top: 22px;
+        padding: 20px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.76);
+      }
+
+      .document-line {
+        position: relative;
+        min-height: 18px;
+        margin: 10px 0;
+        overflow: hidden;
+        border-radius: 8px;
+        background: rgba(24, 32, 30, 0.07);
+      }
+
+      .document-line::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        width: var(--w);
+        background: rgba(54, 95, 115, 0.18);
+        transform: translateX(-105%);
+        animation: highlight 6.4s var(--ease) infinite;
+        animation-delay: var(--d);
+      }
+
+      .document-line.line-one {
+        --w: 68%;
+        --d: 0ms;
+      }
+
+      .document-line.line-two {
+        --w: 84%;
+        --d: 180ms;
+      }
+
+      .document-line.line-three {
+        --w: 54%;
+        --d: 360ms;
+      }
+
+      .document-line.line-four {
+        --w: 76%;
+        --d: 540ms;
+      }
+
+      .document-line.line-five {
+        --w: 48%;
+        --d: 720ms;
+      }
+
+      .floating-toolbar {
+        position: absolute;
+        right: 26px;
+        bottom: 26px;
+        display: flex;
+        gap: 6px;
+        padding: 7px;
+        border: 1px solid rgba(255, 255, 255, 0.48);
+        border-radius: 8px;
+        background: rgba(24, 32, 30, 0.9);
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.12),
+          0 18px 28px -22px rgba(27, 38, 40, 0.65);
+      }
+
+      .floating-toolbar button {
+        display: grid;
+        width: 32px;
+        height: 32px;
+        place-items: center;
+        border: 0;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.08);
+        color: #f8fafc;
+        transition:
+          background 220ms var(--ease),
+          transform 220ms var(--ease);
+      }
+
+      .floating-toolbar button:hover,
+      .floating-toolbar button[aria-pressed="true"] {
+        background: rgba(255, 255, 255, 0.18);
+        transform: translateY(-1px);
+      }
+
+      .floating-toolbar button:active {
+        transform: translateY(1px) scale(0.98);
+      }
+
+      .context-status {
+        min-height: 20px;
+        margin: 14px 0 0;
+        color: var(--muted);
+        font-size: 0.84rem;
         line-height: 1.45;
-        color: var(--muted);
       }
 
-      .foot {
-        margin-top: 14px;
-        font-size: 12px;
+      .final-band {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 18px;
+        align-items: center;
+        margin-top: clamp(48px, 8vw, 96px);
+        padding: 24px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: linear-gradient(135deg, var(--surface-strong) 0%, #1f3135 58%, #33241f 100%);
+        color: #f8fafc;
+        box-shadow: var(--shadow);
+      }
+
+      .final-band h2 {
+        margin: 0;
+        font-size: 2.75rem;
+        line-height: 1;
+        letter-spacing: 0;
+      }
+
+      .final-band p {
+        max-width: 70ch;
+        margin: 12px 0 0;
+        color: rgba(248, 250, 252, 0.72);
+        line-height: 1.6;
+      }
+
+      .site-footer {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 18px;
+        padding: 32px 0 0;
         color: var(--muted);
+        font-size: 0.86rem;
+      }
+
+      .site-footer nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+      }
+
+      .site-footer a {
+        color: var(--ink-soft);
+        font-weight: 700;
+        transition:
+          color 220ms var(--ease),
+          transform 220ms var(--ease);
+      }
+
+      .site-footer a:hover {
+        color: var(--ink);
+        transform: translateY(-1px);
+      }
+
+      @keyframes breathe {
+        0%,
+        100% {
+          box-shadow: 0 0 0 0 rgba(15, 118, 110, 0.24);
+          transform: scale(1);
+        }
+
+        50% {
+          box-shadow: 0 0 0 10px rgba(15, 118, 110, 0);
+          transform: scale(0.9);
+        }
+      }
+
+      @keyframes stream {
+        from {
+          transform: translate3d(0, 0, 0);
+        }
+
+        to {
+          transform: translate3d(-50%, 0, 0);
+        }
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translate3d(0, 0, 0);
+        }
+
+        50% {
+          transform: translate3d(-8px, -10px, 0);
+        }
+      }
+
+      @keyframes shimmer {
+        from {
+          transform: translateX(-110%);
+        }
+
+        to {
+          transform: translateX(240%);
+        }
+      }
+
+      @keyframes reveal {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes highlight {
+        0%,
+        18% {
+          transform: translateX(-105%);
+        }
+
+        36%,
+        64% {
+          transform: translateX(0);
+        }
+
+        82%,
+        100% {
+          transform: translateX(105%);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 1ms !important;
+          animation-iteration-count: 1 !important;
+          scroll-behavior: auto !important;
+          transition-duration: 1ms !important;
+        }
+      }
+
+      @media (max-width: 1180px) {
+        .nav-links a small {
+          display: none;
+        }
+
+        .nav-link-minor {
+          display: none;
+        }
+      }
+
+      @media (max-width: 1040px) {
+        .page-shell {
+          width: min(100% - 36px, 900px);
+        }
+
+        .hero,
+        .workbench,
+        .intelligence-grid,
+        .section-heading,
+        .final-band {
+          grid-template-columns: 1fr;
+        }
+
+        .hero {
+          min-height: auto;
+        }
+
+        .console-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .guard-panel {
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+
+        .floating-proof {
+          margin-left: 0;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .page-shell {
+          width: 100%;
+          padding: 0 16px 48px;
+        }
+
+        .security-header {
+          position: static;
+          margin-top: 10px;
+        }
+
+        .advisory-bar {
+          grid-template-columns: 1fr;
+          gap: 8px;
+        }
+
+        .utility-links {
+          flex-wrap: wrap;
+          justify-content: flex-start;
+          gap: 10px;
+        }
+
+        .advisory-copy {
+          white-space: normal;
+        }
+
+        .site-nav {
+          flex-wrap: wrap;
+        }
+
+        .nav-links {
+          order: 3;
+          width: 100%;
+          display: flex;
+          gap: 8px;
+          overflow-x: auto;
+          padding: 2px 0 4px;
+          scrollbar-width: none;
+        }
+
+        .nav-links::-webkit-scrollbar {
+          display: none;
+        }
+
+        .nav-links a {
+          flex: 0 0 138px;
+          padding: 9px 10px;
+          background: rgba(54, 95, 115, 0.06);
+        }
+
+        .nav-actions {
+          width: 100%;
+          justify-content: space-between;
+        }
+
+        .hero {
+          gap: 30px;
+          padding: 32px 0 28px;
+        }
+
+        .hero h1 {
+          font-size: 2.85rem;
+          line-height: 1;
+        }
+
+        .hero-actions,
+        .input-row,
+        .metric-rail {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-actions {
+          display: grid;
+        }
+
+        .magnetic-button {
+          width: 100%;
+        }
+
+        .magnetic-button.nav-cta,
+        .magnetic-button.nav-cta-secondary {
+          width: auto;
+        }
+
+        .command-strip {
+          grid-template-columns: 1fr;
+        }
+
+        .route-row {
+          grid-template-columns: 1fr;
+          gap: 5px;
+        }
+
+        .route-row em {
+          justify-self: start;
+        }
+
+        .section {
+          padding: 52px 0;
+        }
+
+        .final-band {
+          padding: 20px;
+        }
       }
     </style>
   </head>
   <body>
-    <div class="frame">
-      <div class="window">
-        <div class="titlebar">
-          <div class="traffic"><span></span><span></span><span></span></div>
-          <div class="title">Pounce Dashboard</div>
-          <div class="title">workspace snapshot</div>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <div class="page-shell">
+      <header class="security-header glass">
+        <div class="advisory-bar" aria-label="Security utility links">
+          <a class="advisory-link" href="#live-check">
+            <span class="advisory-type">Supply-chain response center</span>
+            <span class="advisory-copy">Local guardrails for npm/PyPI installs, manifest edits, and feed trust.</span>
+          </a>
+          <div class="utility-links">
+            <a href="../../../docs/getting-started.md">Docs</a>
+            <a href="#intel">Trust model</a>
+            <a href="../../../SECURITY.md">Report issue</a>
+          </div>
         </div>
-        <div class="content">
-          <section class="panel">
-            <h1>Pounce Dashboard</h1>
-            <div class="meta">
-              <span class="badge good">Workspace: protected</span>
-              <span class="badge">Feed: bundled_seed</span>
-              <span class="badge">Active items: 5</span>
+
+        <nav class="site-nav" aria-label="Primary navigation">
+          <a class="brand" href="#top" aria-label="Pounce home">
+            <span class="brand-mark" aria-hidden="true">
+              <svg viewBox="0 0 36 36" fill="none">
+                <path d="M18 4.5 29 8.7v8.1c0 7.4-4.6 12.3-11 14.7-6.4-2.4-11-7.3-11-14.7V8.7L18 4.5Z" fill="#17201f" />
+                <path d="M18 8.3 25.8 11v6.1c0 5.1-3 8.7-7.8 10.7-4.8-2-7.8-5.6-7.8-10.7V11L18 8.3Z" stroke="#d7f1eb" stroke-width="1.4" />
+                <path d="M15 23.5v-11h5.3c2.2 0 3.7 1.3 3.7 3.3s-1.5 3.3-3.7 3.3H15" stroke="#59c2b4" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+            <span class="brand-text">
+              <strong>Pounce</strong>
+              <span>agentic dependency defense</span>
+            </span>
+          </a>
+
+          <div class="nav-links" aria-label="Product navigation">
+            <a href="#guard-flow">Platform<small>Vetting and hooks</small></a>
+            <a href="#live-check">Solutions<small>Agent workflows</small></a>
+            <a href="#intel">Threat intel<small>Feeds and trust</small></a>
+            <a href="../../../docs/getting-started.md">Resources<small>Runbooks and docs</small></a>
+            <a href="../../../README.md">Company<small>Project overview</small></a>
+          </div>
+
+          <div class="nav-actions">
+            <a class="nav-link-minor" href="../../../docs/getting-started.md">Docs</a>
+            <a class="magnetic-button nav-cta-secondary" data-magnetic href="#guard-flow">View dashboard</a>
+            <a class="magnetic-button primary nav-cta" data-magnetic href="../../../docs/getting-started.md">Get started</a>
+          </div>
+        </nav>
+      </header>
+
+      <main id="main-content">
+        <section class="hero" id="top" aria-labelledby="hero-title">
+          <div class="hero-copy-block">
+            <p class="eyebrow"><span class="pulse-dot" aria-hidden="true"></span> Codex-native supply-chain guard</p>
+            <h1 id="hero-title">Dependency changes get checked before they become repo state.</h1>
+            <p class="hero-copy">
+              Pounce vets exact releases, watches shell-time install commands, snapshots dependency files, and shows
+              feed trust directly inside the agent workflow.
+            </p>
+
+            <div class="hero-actions">
+              <a class="magnetic-button primary" data-magnetic href="#live-check">
+                <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                Run a release check
+              </a>
+              <a class="magnetic-button" data-magnetic href="#guard-flow">
+                <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M7 4h10v5H7V4ZM5 15h14v5H5v-5Z" stroke="currentColor" stroke-width="1.8" />
+                  <path d="M12 9v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                </svg>
+                Trace guard stages
+              </a>
             </div>
 
-            <h2>Workspace</h2>
-            <ul>
-              <li>Protection status: <code>protected</code></li>
-              <li>Managed policy: present</li>
-              <li>Hooks: 3/3 configured, enabled in <code>.codex/config.toml</code></li>
-              <li>Latest guard snapshot: recorded for the current workspace</li>
-              <li>Last sweep: <code>ALLOW</code> on the demo repository</li>
-            </ul>
-
-            <h2 style="margin-top: 18px;">Feed</h2>
-            <ul>
-              <li>Selected source: <code>seed</code></li>
-              <li>Trust state: <code>bundled_seed</code></li>
-              <li>Transport policy: HTTPS-only hosted feeds, redirects disabled, 5 MiB response cap</li>
-              <li>Warnings: none</li>
-            </ul>
-
-            <div class="foot">Rendered from the current Pounce dashboard surface for documentation assets.</div>
-          </section>
-
-          <section class="panel">
-            <h2>Recent Verdicts</h2>
-            <div class="verdicts">
-              <article class="verdict">
-                <div class="verdict-head">
-                  <span><code>2026-04-18T06:01:05Z</code></span>
-                  <span class="status">WARN</span>
-                </div>
-                <p><strong>axios@1.15.0</strong><br />npm install-time script matched <code>prepare</code>.</p>
-              </article>
-
-              <article class="verdict">
-                <div class="verdict-head">
-                  <span><code>2026-04-18T05:39:30Z</code></span>
-                  <span class="status block">BLOCK</span>
-                </div>
-                <p><strong>plain-crypto-js@4.2.1</strong><br />Known malicious dependency from the Axios supply-chain compromise.</p>
-              </article>
-
-              <article class="verdict">
-                <div class="verdict-head">
-                  <span><code>2026-04-17T14:01:40Z</code></span>
-                  <span class="status allow">ALLOW</span>
-                </div>
-                <p><strong>workspace sweep</strong><br />No seeded IOC match or heuristic warning was found in the workspace sweep.</p>
-              </article>
+            <div class="command-strip" aria-label="Portable demo commands">
+              <span class="prompt-symbol" aria-hidden="true">&gt;</span>
+              <div class="prompt-stack">
+                <code>python3 plugins/pounce/scripts/install_local.py --workspace "$(pwd)"</code>
+                <code>python3 plugins/pounce/scripts/pounce_demo.py --json</code>
+                <code>pytest -q</code>
+              </div>
             </div>
-          </section>
-        </div>
-      </div>
+          </div>
+
+          <div class="hero-visual" aria-label="Pounce dashboard preview">
+            <div class="console-shell">
+              <div class="console-topbar">
+                <div class="window-lines" aria-hidden="true"><span></span><span></span><span></span></div>
+                <div class="console-title">workspace snapshot</div>
+              </div>
+
+              <div class="console-grid">
+                <section class="guard-panel" aria-label="Current protection state">
+                  <div class="guard-kicker">
+                    <span class="status-pill"><span class="pulse-dot" aria-hidden="true"></span> Protected</span>
+                    <span class="console-title">pounce.dashboard</span>
+                  </div>
+                  <div>
+                    <h2>Guardrails stay attached to the turn.</h2>
+                    <p>
+                      Install checks, dependency-file snapshots, and dashboard state share one workspace view so risky
+                      package edits do not drift out of context.
+                    </p>
+                  </div>
+
+                  <div class="scan-route" id="guard-flow">
+                    <div class="route-row">
+                      <span>allow</span>
+                      <strong>jose@6.2.2</strong>
+                      <em>clean</em>
+                    </div>
+                    <div class="route-row warn">
+                      <span>warn</span>
+                      <strong>axios@1.15.0</strong>
+                      <em>script</em>
+                    </div>
+                    <div class="route-row block">
+                      <span>block</span>
+                      <strong>plain-crypto-js@4.2.1</strong>
+                      <em>ioc</em>
+                    </div>
+                  </div>
+
+                  <div class="metric-rail" aria-label="Protection metrics">
+                    <div class="metric">
+                      <span>hook events</span>
+                      <strong>3/3</strong>
+                    </div>
+                    <div class="metric">
+                      <span>feed cap</span>
+                      <strong>5 MiB</strong>
+                    </div>
+                  </div>
+                </section>
+
+                <aside class="queue-panel" aria-label="Live prioritization queue">
+                  <h3>Live queue</h3>
+                  <div class="queue-list" data-queue>
+                    <div class="queue-item is-active block" data-rank="0">
+                      <i aria-hidden="true"></i>
+                      <strong>plain-crypto-js</strong>
+                      <span>block</span>
+                    </div>
+                    <div class="queue-item warn" data-rank="1">
+                      <i aria-hidden="true"></i>
+                      <strong>axios prepare hook</strong>
+                      <span>warn</span>
+                    </div>
+                    <div class="queue-item" data-rank="2">
+                      <i aria-hidden="true"></i>
+                      <strong>workspace sweep</strong>
+                      <span>allow</span>
+                    </div>
+                    <div class="queue-item" data-rank="3">
+                      <i aria-hidden="true"></i>
+                      <strong>feed trust state</strong>
+                      <span>seed</span>
+                    </div>
+                  </div>
+                </aside>
+              </div>
+
+              <div class="stream-band" aria-label="Recent signal stream">
+                <div class="stream-title">signal stream</div>
+                <div class="stream-window">
+                  <div class="stream-track" aria-hidden="true">
+                    <span class="stream-chip allow"><b>ALLOW</b> workspace sweep</span>
+                    <span class="stream-chip warn"><b>WARN</b> install-time script</span>
+                    <span class="stream-chip block"><b>BLOCK</b> seeded IOC</span>
+                    <span class="stream-chip trust"><b>TRUST</b> bundled seed</span>
+                    <span class="stream-chip hook"><b>HOOK</b> Stop file diff</span>
+                    <span class="stream-chip allow"><b>ALLOW</b> workspace sweep</span>
+                    <span class="stream-chip warn"><b>WARN</b> install-time script</span>
+                    <span class="stream-chip block"><b>BLOCK</b> seeded IOC</span>
+                    <span class="stream-chip trust"><b>TRUST</b> bundled seed</span>
+                    <span class="stream-chip hook"><b>HOOK</b> Stop file diff</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <aside class="floating-proof" aria-label="Documentation asset preview">
+              <div class="proof-image">
+                <img src="pounce-dashboard.png" alt="Pounce dashboard asset preview" />
+              </div>
+              <div class="proof-copy">
+                <strong>Docs-ready dashboard surface</strong>
+                <span>Built for demos, README proof points, and chat-native status snapshots.</span>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="section" id="live-check" aria-labelledby="live-check-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow"><span class="pulse-dot" aria-hidden="true"></span> release vetting</p>
+              <h2 id="live-check-title">Test the decision surface without leaving the page.</h2>
+            </div>
+            <p>
+              The interface models Pounce's release workflow: exact packages pass through allow, warn, and block
+              outcomes with inline state changes.
+            </p>
+          </div>
+
+          <div class="workbench">
+            <section class="module check-module" aria-label="Interactive release check">
+              <p class="form-title">command input</p>
+              <h2>Try an exact package release.</h2>
+              <p>
+                Use package specs such as <strong>jose@6.2.2</strong>, <strong>axios@1.15.0</strong>, or
+                <strong>plain-crypto-js@4.2.1</strong>.
+              </p>
+
+              <form id="vet-form" novalidate>
+                <div class="field-stack" data-field-stack>
+                  <label for="package-spec">Package release</label>
+                  <div class="input-row">
+                    <input
+                      id="package-spec"
+                      name="package-spec"
+                      autocomplete="off"
+                      placeholder="jose@6.2.2"
+                      aria-describedby="package-help package-error"
+                      aria-invalid="false"
+                    />
+                    <button class="magnetic-button primary" data-magnetic type="submit">Run check</button>
+                  </div>
+                  <p class="helper" id="package-help">Exact npm specs use name@version. Exact PyPI specs use name==version.</p>
+                  <p class="field-error" id="package-error">Enter an exact release before running the check.</p>
+                </div>
+              </form>
+
+              <div class="result-box" aria-live="polite" aria-busy="false">
+                <div class="result-state empty-state is-visible" data-state="empty">
+                  <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 3 5 6v5.2c0 4.2 2.7 7.9 7 9.8 4.3-1.9 7-5.6 7-9.8V6l-7-3Z" stroke="currentColor" stroke-width="1.8" />
+                    <path d="M9 12h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                  </svg>
+                  <strong>No package checked yet</strong>
+                  <span>Submit an exact release to populate this verdict panel.</span>
+                </div>
+
+                <div class="result-state loading-state" data-state="loading">
+                  <div class="skeleton" aria-label="Loading result">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                </div>
+
+                <div class="result-state error-state" data-state="error">
+                  <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 8v5M12 17h.01M10.3 4.9 3.6 16.5A2 2 0 0 0 5.3 19.5h13.4a2 2 0 0 0 1.7-3L13.7 4.9a2 2 0 0 0-3.4 0Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                  </svg>
+                  <strong>Exact release required</strong>
+                  <span>Pounce blocks floating install recommendations until a concrete version is vetted.</span>
+                </div>
+
+                <div class="result-state verdict-state" data-state="verdict" data-tone="allow">
+                  <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 3 5 6v5.2c0 4.2 2.7 7.9 7 9.8 4.3-1.9 7-5.6 7-9.8V6l-7-3Z" stroke="currentColor" stroke-width="1.8" />
+                    <path d="m8.5 12 2.2 2.2 4.9-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                  <span class="verdict-label" data-verdict-label>ALLOW</span>
+                  <strong data-verdict-title>Release can proceed</strong>
+                  <span data-verdict-copy>No seeded IOC or install-time warning matched this exact package release.</span>
+                </div>
+              </div>
+            </section>
+
+            <aside class="module timeline-module" aria-label="Hook enforcement timeline">
+              <div class="timeline-head">
+                <p class="form-title">hook timeline</p>
+                <p>Three stages keep the dependency story attached to the agent turn.</p>
+              </div>
+              <div class="timeline">
+                <div class="timeline-step step-one">
+                  <i>1</i>
+                  <div>
+                    <strong>UserPromptSubmit</strong>
+                    <span>Snapshot dependency manifests and lockfiles before tools run.</span>
+                  </div>
+                </div>
+                <div class="timeline-step step-two">
+                  <i>2</i>
+                  <div>
+                    <strong>PreToolUse</strong>
+                    <span>Inspect install commands and block known bad or non-exact specs.</span>
+                  </div>
+                </div>
+                <div class="timeline-step step-three">
+                  <i>3</i>
+                  <div>
+                    <strong>Stop</strong>
+                    <span>Diff dependency files against the snapshot and flag unexplained edits.</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="section" id="intel" aria-labelledby="intel-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow"><span class="pulse-dot" aria-hidden="true"></span> feed trust</p>
+              <h2 id="intel-title">Signals stay explainable when the network is not perfect.</h2>
+            </div>
+            <p>
+              Pounce separates confirmed malicious-package intelligence from warning-only provenance and install
+              mechanics, then reports the active source in the dashboard.
+            </p>
+          </div>
+
+          <div class="intelligence-grid">
+            <section class="module source-module" aria-label="Threat intelligence sources">
+              <p class="form-title">source precedence</p>
+              <h2>Bounded inputs, visible trust.</h2>
+              <div class="source-list">
+                <div class="source-row">
+                  <div>
+                    <strong>Hosted normalized feed</strong>
+                    <span>HTTPS-only, no redirects, capped response body.</span>
+                  </div>
+                  <code>remote</code>
+                </div>
+                <div class="source-row">
+                  <div>
+                    <strong>Local sync cache</strong>
+                    <span>GitHub malware advisories and OSV-derived records.</span>
+                  </div>
+                  <code>cache</code>
+                </div>
+                <div class="source-row">
+                  <div>
+                    <strong>Bundled seed data</strong>
+                    <span>Offline fallback for demos and first-run coverage.</span>
+                  </div>
+                  <code>seed</code>
+                </div>
+              </div>
+            </section>
+
+            <section class="module document-module" aria-label="Contextual dashboard document">
+              <p class="form-title">context surface</p>
+              <h2>Recent verdicts read like evidence, not mystery state.</h2>
+              <p>
+                The dashboard keeps workspace protection, feed source, and package verdicts visible together so a
+                reviewer can trace why a recommendation changed.
+              </p>
+              <div class="document-sheet">
+                <div class="document-line line-one"></div>
+                <div class="document-line line-two"></div>
+                <div class="document-line line-three"></div>
+                <div class="document-line line-four"></div>
+                <div class="document-line line-five"></div>
+              </div>
+              <div class="floating-toolbar" aria-label="Context actions">
+                <button type="button" data-action="mark" aria-label="Mark verdict" aria-pressed="false">
+                  <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+                    <path d="m5 13 4 4L19 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </button>
+                <button type="button" data-action="copy" aria-label="Copy context" aria-pressed="false">
+                  <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+                    <path d="M8 8h10v12H8V8Z" stroke="currentColor" stroke-width="1.8" />
+                    <path d="M6 16H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                  </svg>
+                </button>
+                <button type="button" data-action="trace" aria-label="Open trace">
+                  <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+                    <path d="M7 17 17 7M9 7h8v8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </button>
+              </div>
+              <p class="context-status" data-toolbar-status>Context actions are ready.</p>
+            </section>
+          </div>
+
+          <div class="final-band">
+            <div>
+              <h2>Local-first security, shaped for agent workflows.</h2>
+              <p>
+                The page now matches the product story: exact release checks, hook enforcement, feed trust, and
+                chat-native status in one visible surface.
+              </p>
+            </div>
+            <a class="magnetic-button" data-magnetic href="#top">Back to top</a>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <span>Pounce protects dependency changes before they settle into repo state.</span>
+        <nav aria-label="Footer navigation">
+          <a href="../../../LICENSE">MIT license</a>
+          <a href="../../../SECURITY.md">Security policy</a>
+          <a href="../../../docs/getting-started.md">Getting started</a>
+          <a href="../../../README.md">Project overview</a>
+        </nav>
+      </footer>
     </div>
+
+    <script>
+      const exactReleasePattern = /^(?:(?:@[a-z0-9][a-z0-9._-]*\/)?[a-z0-9][a-z0-9._-]*@[0-9][^\s]*|[a-z0-9][a-z0-9._-]*==[0-9][^\s]*)$/i;
+
+      const verdicts = [
+        {
+          match: "plain-crypto-js",
+          tone: "block",
+          label: "BLOCK",
+          title: "Known bad release blocked",
+          copy: "The release matches bundled malicious-package intelligence and should not be installed."
+        },
+        {
+          match: "axios",
+          tone: "warn",
+          label: "WARN",
+          title: "Install-time script needs review",
+          copy: "The release is not automatically blocked, but the install mechanics deserve manual review."
+        },
+        {
+          match: "",
+          tone: "allow",
+          label: "ALLOW",
+          title: "Release can proceed",
+          copy: "No seeded IOC or install-time warning matched this exact package release."
+        }
+      ];
+
+      const setState = (stateName) => {
+        document.querySelectorAll("[data-state]").forEach((state) => {
+          state.classList.toggle("is-visible", state.dataset.state === stateName);
+        });
+      };
+
+      const form = document.querySelector("#vet-form");
+      const input = document.querySelector("#package-spec");
+      const fieldStack = document.querySelector("[data-field-stack]");
+      const resultBox = document.querySelector(".result-box");
+      const verdictState = document.querySelector('[data-state="verdict"]');
+      const verdictLabel = document.querySelector("[data-verdict-label]");
+      const verdictTitle = document.querySelector("[data-verdict-title]");
+      const verdictCopy = document.querySelector("[data-verdict-copy]");
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const spec = input.value.trim();
+
+        if (!exactReleasePattern.test(spec)) {
+          fieldStack.classList.add("is-invalid");
+          input.setAttribute("aria-invalid", "true");
+          resultBox.setAttribute("aria-busy", "false");
+          setState("error");
+          return;
+        }
+
+        fieldStack.classList.remove("is-invalid");
+        input.setAttribute("aria-invalid", "false");
+        resultBox.setAttribute("aria-busy", "true");
+        setState("loading");
+
+        window.setTimeout(() => {
+          const normalized = spec.toLowerCase();
+          const verdict = verdicts.find((item) => item.match && normalized.includes(item.match)) || verdicts[2];
+          verdictState.dataset.tone = verdict.tone;
+          verdictLabel.textContent = verdict.label;
+          verdictTitle.textContent = verdict.title;
+          verdictCopy.textContent = verdict.copy;
+          resultBox.setAttribute("aria-busy", "false");
+          setState("verdict");
+        }, 740);
+      });
+
+      document.querySelectorAll("[data-magnetic]").forEach((element) => {
+        const strength = 0.18;
+
+        element.addEventListener("pointermove", (event) => {
+          const rect = element.getBoundingClientRect();
+          const x = (event.clientX - rect.left - rect.width / 2) * strength;
+          const y = (event.clientY - rect.top - rect.height / 2) * strength;
+          element.style.setProperty("--mx", `${x.toFixed(2)}px`);
+          element.style.setProperty("--my", `${y.toFixed(2)}px`);
+        });
+
+        element.addEventListener("pointerleave", () => {
+          element.style.setProperty("--mx", "0px");
+          element.style.setProperty("--my", "0px");
+        });
+      });
+
+      const toolbarStatus = document.querySelector("[data-toolbar-status]");
+      document.querySelectorAll("[data-action]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const action = button.dataset.action;
+
+          if (action === "mark") {
+            const nextPressed = button.getAttribute("aria-pressed") !== "true";
+            button.setAttribute("aria-pressed", String(nextPressed));
+            toolbarStatus.textContent = nextPressed
+              ? "Verdict marked for the review handoff."
+              : "Verdict mark removed from the review handoff.";
+          }
+
+          if (action === "copy") {
+            const nextPressed = button.getAttribute("aria-pressed") !== "true";
+            button.setAttribute("aria-pressed", String(nextPressed));
+            toolbarStatus.textContent = nextPressed
+              ? "Context copied into the handoff preview."
+              : "Context copy preview cleared.";
+          }
+
+          if (action === "trace") {
+            document.querySelector("#guard-flow").scrollIntoView({ behavior: "smooth", block: "center" });
+            toolbarStatus.textContent = "Trace opened at the guard-stage route.";
+          }
+        });
+      });
+
+      const navAnchors = Array.from(document.querySelectorAll('.nav-links a[href^="#"]'));
+      const navTargets = navAnchors
+        .map((anchor) => ({ anchor, target: document.querySelector(anchor.getAttribute("href")) }))
+        .filter((item) => item.target);
+
+      const syncActiveNav = () => {
+        const currentY = window.scrollY + 220;
+        const active = navTargets.reduce((closest, item) => {
+          return item.target.offsetTop <= currentY ? item : closest;
+        }, navTargets[0]);
+
+        navAnchors.forEach((anchor) => anchor.removeAttribute("aria-current"));
+        if (active) {
+          active.anchor.setAttribute("aria-current", "true");
+        }
+      };
+
+      window.addEventListener("scroll", syncActiveNav, { passive: true });
+      syncActiveNav();
+
+      const queue = document.querySelector("[data-queue]");
+      const rotateQueue = () => {
+        const items = Array.from(queue.children);
+        items.forEach((item) => item.classList.remove("is-active"));
+        queue.appendChild(items[0]);
+        queue.firstElementChild.classList.add("is-active");
+      };
+
+      if (queue) {
+        window.setInterval(rotateQueue, 3300);
+      }
+    </script>
   </body>
 </html>

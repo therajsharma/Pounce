@@ -4,14 +4,43 @@ Pounce adds dependency vetting, shell-time install guardrails, workspace sweeps,
 
 ## Quick path
 
-1. Install the local plugin into Codex.
-2. Run the smoke demo.
+1. Add the Pounce marketplace to Codex.
+2. Install Pounce from `/plugins`.
 3. Open the dashboard in Codex chat.
-4. Run the test suite.
 
-## Local install
+## Install from GitHub
 
-From the repository root:
+Add the Pounce marketplace directly from GitHub:
+
+```bash
+codex plugin marketplace add therajsharma/Pounce --ref main
+```
+
+Open a new Codex session, then run:
+
+```text
+/plugins
+```
+
+Choose `Local Security Plugins`, search for `Pounce`, and install it. For a stable team rollout, publish a release tag and use that tag instead of `main`:
+
+```bash
+codex plugin marketplace add therajsharma/Pounce --ref v0.1.0
+```
+
+### If the marketplace command fails with `ENOENT`
+
+If `codex plugin marketplace add ...` fails while trying to spawn a missing path under `node_modules/@openai/codex-darwin-arm64`, the local Codex CLI install is incomplete. Repair Codex first, then rerun the marketplace command:
+
+```bash
+npm uninstall -g @openai/codex
+npm install -g @openai/codex@0.130.0
+codex plugin marketplace add therajsharma/Pounce --ref main
+```
+
+## Local development install
+
+If you are developing Pounce from a local checkout, run this from the repository root:
 
 ```bash
 python3 plugins/pounce/scripts/install_local.py --workspace "$(pwd)"

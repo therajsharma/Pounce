@@ -1,0 +1,121 @@
+[a] Skip to content
+[a] Supply-chain response center Local guardrails for npm/PyPI installs, manifest edits, and feed trust.
+[span] Supply-chain response center
+[span] Local guardrails for npm/PyPI installs, manifest edits, and feed trust.
+[a] Docs
+[a] Trust model
+[a] Report issue
+[a] Pounce agentic dependency defense
+[span] 
+[span] Pounce agentic dependency defense
+[strong] Pounce
+[span] agentic dependency defense
+[a] PlatformVetting and hooks
+[small] Vetting and hooks
+[a] SolutionsAgent workflows
+[small] Agent workflows
+[a] Threat intelFeeds and trust
+[small] Feeds and trust
+[a] ResourcesRunbooks and docs
+[small] Runbooks and docs
+[a] CompanyProject overview
+[small] Project overview
+[a] Docs
+[a] View dashboard
+[a] Get started
+[p] Codex-native supply-chain guard
+[span] 
+[h1] Dependency changes get checked before they become repo state.
+[p] Pounce vets exact releases, watches shell-time install commands, snapshots dependency files, and shows feed trust directly inside the agent workflow.
+[a] Run a release check
+[a] Trace guard stages
+[span] >
+[span] 
+[span] 
+[span] 
+[span] Protected
+[span] 
+[span] pounce.dashboard
+[h2] Guardrails stay attached to the turn.
+[p] Install checks, dependency-file snapshots, and dashboard state share one workspace view so risky package edits do not drift out of context.
+[span] allow
+[strong] jose@6.2.2
+[span] warn
+[strong] axios@1.15.0
+[span] block
+[strong] plain-crypto-js@4.2.1
+[span] hook events
+[strong] 3/3
+[span] feed cap
+[strong] 5 MiB
+[h3] Live queue
+[strong] plain-crypto-js
+[span] block
+[strong] axios prepare hook
+[span] warn
+[strong] workspace sweep
+[span] allow
+[strong] feed trust state
+[span] seed
+[span] ALLOW workspace sweep
+[span] WARN install-time script
+[span] BLOCK seeded IOC
+[span] TRUST bundled seed
+[span] HOOK Stop file diff
+[span] ALLOW workspace sweep
+[span] WARN install-time script
+[span] BLOCK seeded IOC
+[span] TRUST bundled seed
+[span] HOOK Stop file diff
+[strong] Docs-ready dashboard surface
+[span] Built for demos, README proof points, and chat-native status snapshots.
+[p] release vetting
+[span] 
+[h2] Test the decision surface without leaving the page.
+[p] The interface models Pounce's release workflow: exact packages pass through allow, warn, and block outcomes with inline state changes.
+[p] command input
+[h2] Try an exact package release.
+[p] Use package specs such as jose@6.2.2, axios@1.15.0, or plain-crypto-js@4.2.1.
+[strong] jose@6.2.2
+[strong] axios@1.15.0
+[strong] plain-crypto-js@4.2.1
+[label] Package release
+[button] Run check
+[p] Exact npm specs use name@version. Exact PyPI specs use name==version.
+[strong] No package checked yet
+[span] Submit an exact release to populate this verdict panel.
+[p] hook timeline
+[p] Three stages keep the dependency story attached to the agent turn.
+[strong] UserPromptSubmit
+[span] Snapshot dependency manifests and lockfiles before tools run.
+[strong] PreToolUse
+[span] Inspect install commands and block known bad or non-exact specs.
+[strong] Stop
+[span] Diff dependency files against the snapshot and flag unexplained edits.
+[p] feed trust
+[span] 
+[h2] Signals stay explainable when the network is not perfect.
+[p] Pounce separates confirmed malicious-package intelligence from warning-only provenance and install mechanics, then reports the active source in the dashboard.
+[p] source precedence
+[h2] Bounded inputs, visible trust.
+[strong] Hosted normalized feed
+[span] HTTPS-only, no redirects, capped response body.
+[strong] Local sync cache
+[span] GitHub malware advisories and OSV-derived records.
+[strong] Bundled seed data
+[span] Offline fallback for demos and first-run coverage.
+[p] context surface
+[h2] Recent verdicts read like evidence, not mystery state.
+[p] The dashboard keeps workspace protection, feed source, and package verdicts visible together so a reviewer can trace why a recommendation changed.
+[button] 
+[button] 
+[button] 
+[p] Context actions are ready.
+[h2] Local-first security, shaped for agent workflows.
+[p] The page now matches the product story: exact release checks, hook enforcement, feed trust, and chat-native status in one visible surface.
+[a] Back to top
+[span] Pounce protects dependency changes before they settle into repo state.
+[a] MIT license
+[a] Security policy
+[a] Getting started
+[a] Project overview

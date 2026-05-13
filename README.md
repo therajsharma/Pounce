@@ -1,6 +1,6 @@
 # Pounce
 
-[![Tests](https://github.com/therajsharma/Project-Zero/actions/workflows/test.yml/badge.svg)](https://github.com/therajsharma/Project-Zero/actions/workflows/test.yml)
+[![Tests](https://github.com/therajsharma/Pounce/actions/workflows/test.yml/badge.svg)](https://github.com/therajsharma/Pounce/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Python 3.13](https://img.shields.io/badge/python-3.13-blue.svg)](https://www.python.org/downloads/)
 
@@ -9,6 +9,16 @@ Pounce is a Codex-native dependency security layer that vets exact package relea
 ![Pounce plugin overview](docs/git_main.png)
 
 ## Quick start
+
+Install from the GitHub-backed Codex marketplace:
+
+```bash
+codex plugin marketplace add therajsharma/Pounce --ref main
+```
+
+Then open a new Codex session, run `/plugins`, choose `Local Security Plugins`, and install `Pounce`.
+
+For local development from this repository:
 
 ```bash
 python3 plugins/pounce/scripts/install_local.py --workspace "$(pwd)"

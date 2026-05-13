@@ -1,0 +1,217 @@
+[
+  {
+    "text": "Dependency",
+    "start": 0.2,
+    "end": 0.616
+  },
+  {
+    "text": "changes",
+    "start": 0.707,
+    "end": 1.123
+  },
+  {
+    "text": "shouldn't",
+    "start": 1.214,
+    "end": 1.63
+  },
+  {
+    "text": "quietly",
+    "start": 1.721,
+    "end": 2.137
+  },
+  {
+    "text": "become",
+    "start": 2.229,
+    "end": 2.644
+  },
+  {
+    "text": "repo",
+    "start": 2.736,
+    "end": 3.152
+  },
+  {
+    "text": "state.",
+    "start": 3.243,
+    "end": 3.659
+  },
+  {
+    "text": "Pounce",
+    "start": 4.95,
+    "end": 5.266
+  },
+  {
+    "text": "checks",
+    "start": 5.336,
+    "end": 5.652
+  },
+  {
+    "text": "exact",
+    "start": 5.721,
+    "end": 6.038
+  },
+  {
+    "text": "releases",
+    "start": 6.107,
+    "end": 6.423
+  },
+  {
+    "text": "before",
+    "start": 6.493,
+    "end": 6.809
+  },
+  {
+    "text": "the",
+    "start": 6.879,
+    "end": 7.195
+  },
+  {
+    "text": "install",
+    "start": 7.264,
+    "end": 7.581
+  },
+  {
+    "text": "watches",
+    "start": 7.65,
+    "end": 7.956
+  },
+  {
+    "text": "the",
+    "start": 8.024,
+    "end": 8.33
+  },
+  {
+    "text": "shell",
+    "start": 8.397,
+    "end": 8.704
+  },
+  {
+    "text": "while",
+    "start": 8.771,
+    "end": 9.077
+  },
+  {
+    "text": "agents",
+    "start": 9.145,
+    "end": 9.451
+  },
+  {
+    "text": "work",
+    "start": 9.518,
+    "end": 9.825
+  },
+  {
+    "text": "and",
+    "start": 9.892,
+    "end": 10.199
+  },
+  {
+    "text": "keeps",
+    "start": 10.266,
+    "end": 10.572
+  },
+  {
+    "text": "every",
+    "start": 10.639,
+    "end": 10.946
+  },
+  {
+    "text": "allow",
+    "start": 11.013,
+    "end": 11.32
+  },
+  {
+    "text": "warn",
+    "start": 11.387,
+    "end": 11.693
+  },
+  {
+    "text": "and",
+    "start": 11.761,
+    "end": 12.067
+  },
+  {
+    "text": "block",
+    "start": 12.134,
+    "end": 12.441
+  },
+  {
+    "text": "verdict",
+    "start": 12.508,
+    "end": 12.814
+  },
+  {
+    "text": "attached",
+    "start": 12.882,
+    "end": 13.188
+  },
+  {
+    "text": "to",
+    "start": 13.255,
+    "end": 13.562
+  },
+  {
+    "text": "the",
+    "start": 13.629,
+    "end": 13.935
+  },
+  {
+    "text": "same",
+    "start": 14.003,
+    "end": 14.309
+  },
+  {
+    "text": "workspace.",
+    "start": 14.376,
+    "end": 14.683
+  },
+  {
+    "text": "Feed",
+    "start": 15.45,
+    "end": 15.798
+  },
+  {
+    "text": "trust",
+    "start": 15.875,
+    "end": 16.224
+  },
+  {
+    "text": "stays",
+    "start": 16.3,
+    "end": 16.648
+  },
+  {
+    "text": "visible.",
+    "start": 16.725,
+    "end": 17.073
+  },
+  {
+    "text": "Risky",
+    "start": 17.45,
+    "end": 17.716
+  },
+  {
+    "text": "packages",
+    "start": 17.775,
+    "end": 18.041
+  },
+  {
+    "text": "stop",
+    "start": 18.1,
+    "end": 18.366
+  },
+  {
+    "text": "before",
+    "start": 18.425,
+    "end": 18.691
+  },
+  {
+    "text": "they",
+    "start": 18.75,
+    "end": 19.017
+  },
+  {
+    "text": "settle.",
+    "start": 19.075,
+    "end": 19.341
+  }
+]

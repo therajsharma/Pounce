@@ -32,6 +32,43 @@ class PounceInstallTests(unittest.TestCase):
         self.assertTrue(hooks_exists)
         self.assertTrue(config_exists)
 
+    def test_main_writes_installed_configs_with_final_plugin_paths(self) -> None:
+        with tempfile.TemporaryDirectory() as home_dir, tempfile.TemporaryDirectory() as workspace_dir:
+            fake_home = Path(home_dir)
+            workspace = Path(workspace_dir)
+            installed_root = fake_home / ".codex" / "plugins" / "pounce"
+            expected_mcp_script = installed_root / "scripts" / "pounce_mcp_server.py"
+            expected_hook_script = installed_root / "scripts" / "pounce_hook.py"
+
+            with mock.patch.object(Path, "home", return_value=fake_home), mock.patch.object(
+                sys,
+                "argv",
+                ["install_local.py", "--workspace", str(workspace)],
+            ):
+                install_local.main()
+
+            mcp_text = (installed_root / ".mcp.json").read_text(encoding="utf-8")
+            hooks_text = (installed_root / "hooks.json").read_text(encoding="utf-8")
+            mcp_payload = json.loads(mcp_text)
+            hooks_payload = json.loads(hooks_text)
+
+            self.assertEqual(mcp_payload["mcpServers"]["pounce"]["args"], [str(expected_mcp_script)])
+            self.assertNotIn(".stage-", mcp_text)
+            self.assertNotIn(".stage-", hooks_text)
+            self.assertTrue(expected_mcp_script.exists())
+            self.assertTrue(expected_hook_script.exists())
+
+            pounce_hook_commands = []
+            for event_entries in hooks_payload["hooks"].values():
+                for entry in event_entries:
+                    for hook in entry["hooks"]:
+                        if "pounce_hook.py" in hook["command"]:
+                            pounce_hook_commands.append(hook["command"])
+
+            self.assertGreaterEqual(len(pounce_hook_commands), 3)
+            for command in pounce_hook_commands:
+                self.assertIn(str(expected_hook_script), command)
+
     def test_workspace_hook_merge_preserves_existing_hooks_and_is_idempotent(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             workspace = Path(tmpdir)

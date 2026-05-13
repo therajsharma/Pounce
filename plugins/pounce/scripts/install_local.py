@@ -81,8 +81,8 @@ def reserve_backup_path(parent: Path, prefix: str) -> Path:
     return path
 
 
-def write_installed_mcp(installed_root: Path) -> None:
-    server_script = installed_root / "scripts" / "pounce_mcp_server.py"
+def write_installed_mcp(config_root: Path, runtime_root: Path) -> None:
+    server_script = runtime_root / "scripts" / "pounce_mcp_server.py"
     payload = {
         "mcpServers": {
             "pounce": {
@@ -91,11 +91,11 @@ def write_installed_mcp(installed_root: Path) -> None:
             }
         }
     }
-    write_json_atomic(installed_root / ".mcp.json", payload)
+    write_json_atomic(config_root / ".mcp.json", payload)
 
 
-def write_installed_hooks(installed_root: Path) -> None:
-    write_json_atomic(installed_root / "hooks.json", render_workspace_hooks(installed_root))
+def write_installed_hooks(config_root: Path, runtime_root: Path) -> None:
+    write_json_atomic(config_root / "hooks.json", render_workspace_hooks(runtime_root))
 
 
 def load_marketplace(path: Path) -> dict[str, Any]:
@@ -171,8 +171,8 @@ def stage_plugin_tree(source_root: Path, installed_root: Path) -> Path:
     stage_root = Path(tempfile.mkdtemp(prefix=f"{PLUGIN_NAME}.stage-", dir=str(installed_root.parent)))
     shutil.rmtree(stage_root)
     shutil.copytree(source_root, stage_root)
-    write_installed_mcp(stage_root)
-    write_installed_hooks(stage_root)
+    write_installed_mcp(stage_root, installed_root)
+    write_installed_hooks(stage_root, installed_root)
     return stage_root
 
 

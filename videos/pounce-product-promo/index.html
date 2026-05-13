@@ -1,0 +1,804 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pounce Product Promo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #18181b;
+        --ink-soft: #3f4749;
+        --muted: #69726f;
+        --bg: #f7f8f4;
+        --bg-soft: #eef4f7;
+        --surface: #ffffff;
+        --dark: #17201f;
+        --teal: #0e7669;
+        --allow: #287665;
+        --warn: #a56b1d;
+        --block: #a84638;
+        --steel: #365f73;
+        --line: rgba(36, 47, 50, 0.16);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: Outfit, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      body {
+        display: grid;
+        place-items: center;
+      }
+
+      [data-composition-id="pounce-product-promo"] {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 22% 22%, rgba(14, 118, 105, 0.14), transparent 25%),
+          radial-gradient(circle at 82% 32%, rgba(168, 70, 56, 0.11), transparent 29%),
+          linear-gradient(180deg, #ffffff 0%, var(--bg) 48%, var(--bg-soft) 100%);
+      }
+
+      .grain {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        pointer-events: none;
+        opacity: 0.1;
+        background-image:
+          radial-gradient(rgba(27, 38, 40, 0.25) 0.8px, transparent 0.8px),
+          linear-gradient(90deg, transparent, rgba(165, 107, 29, 0.08), transparent);
+        background-size: 24px 24px, 680px 100%;
+      }
+
+      .scene {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        z-index: 4;
+        display: flex;
+        width: 100%;
+        height: 100%;
+        padding: 86px 104px;
+      }
+
+      .scene-inner {
+        position: relative;
+        z-index: 8;
+        display: grid;
+        width: 100%;
+        height: 100%;
+        gap: 48px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        margin: 0;
+        color: var(--teal);
+        font-size: 24px;
+        font-weight: 800;
+      }
+
+      .dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 999px;
+        background: var(--teal);
+        box-shadow: 0 0 0 0 rgba(14, 118, 105, 0.28);
+      }
+
+      .headline {
+        max-width: 780px;
+        margin: 20px 0 0;
+        font-size: 118px;
+        line-height: 0.93;
+        font-weight: 900;
+        letter-spacing: 0;
+      }
+
+      .headline span {
+        display: inline-block;
+      }
+
+      .body-copy {
+        max-width: 720px;
+        color: var(--muted);
+        font-size: 32px;
+        line-height: 1.42;
+        font-weight: 600;
+      }
+
+      .mono {
+        font-family: "IBM Plex Mono", "Geist Mono", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+
+      .panel {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.82);
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.92),
+          0 30px 70px -42px rgba(27, 38, 40, 0.54);
+        backdrop-filter: blur(18px);
+      }
+
+      .hero-shot {
+        position: absolute;
+        right: -150px;
+        top: 80px;
+        width: 1180px;
+        height: 664px;
+        overflow: hidden;
+        border: 1px solid rgba(36, 47, 50, 0.18);
+        border-radius: 10px;
+        opacity: 0.72;
+        box-shadow: 0 34px 100px -58px rgba(23, 32, 31, 0.72);
+      }
+
+      .hero-shot img,
+      .product-frame img,
+      .proof-shot img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .command-strip {
+        display: grid;
+        grid-template-columns: 36px minmax(0, 1fr);
+        gap: 18px;
+        max-width: 980px;
+        margin-top: 42px;
+        padding: 24px;
+        color: var(--ink-soft);
+        font-size: 22px;
+        line-height: 1.6;
+      }
+
+      .prompt {
+        color: var(--steel);
+        font-weight: 900;
+      }
+
+      .typed {
+        display: inline-block;
+        min-height: 70px;
+        white-space: nowrap;
+      }
+
+      .chips {
+        position: absolute;
+        right: 130px;
+        bottom: 110px;
+        display: flex;
+        gap: 18px;
+      }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        min-height: 54px;
+        padding: 0 22px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.88);
+        font-size: 18px;
+        font-weight: 900;
+        box-shadow: 0 18px 42px -34px rgba(27, 38, 40, 0.62);
+      }
+
+      .chip.allow b,
+      .route.allow .state {
+        color: var(--allow);
+      }
+
+      .chip.warn b,
+      .route.warn .state {
+        color: var(--warn);
+      }
+
+      .chip.block b,
+      .route.block .state {
+        color: var(--block);
+      }
+
+      .connector {
+        position: absolute;
+        inset: 0;
+        z-index: 6;
+        pointer-events: none;
+      }
+
+      .connector path {
+        fill: none;
+        stroke: var(--teal);
+        stroke-width: 5;
+        stroke-linecap: round;
+        stroke-dasharray: 920;
+        stroke-dashoffset: 920;
+      }
+
+      .scene-two .scene-inner {
+        grid-template-columns: 0.9fr 1.1fr;
+        align-items: center;
+      }
+
+      .scene-two .headline {
+        max-width: 690px;
+        margin-bottom: 26px;
+        font-size: 98px;
+        line-height: 0.94;
+      }
+
+      .route-stack {
+        display: grid;
+        gap: 18px;
+      }
+
+      .route {
+        display: grid;
+        grid-template-columns: 120px minmax(0, 1fr) 150px;
+        align-items: center;
+        gap: 26px;
+        min-height: 100px;
+        padding: 0 30px;
+        border-left: 7px solid var(--allow);
+        font-size: 25px;
+      }
+
+      .route.warn {
+        border-left-color: var(--warn);
+      }
+
+      .route.block {
+        border-left-color: var(--block);
+      }
+
+      .state {
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .package {
+        color: var(--ink);
+        font-weight: 800;
+      }
+
+      .evidence {
+        justify-self: end;
+        color: var(--ink-soft);
+        font-weight: 900;
+      }
+
+      .metric-row {
+        display: flex;
+        gap: 22px;
+        margin-top: 18px;
+      }
+
+      .metric {
+        width: 220px;
+        padding: 18px;
+      }
+
+      .metric span {
+        display: block;
+        color: var(--muted);
+        font-size: 18px;
+        font-weight: 800;
+      }
+
+      .metric strong {
+        display: block;
+        margin-top: 10px;
+        font-size: 42px;
+        line-height: 1;
+      }
+
+      .product-frame {
+        position: relative;
+        height: 720px;
+        overflow: hidden;
+        border-radius: 12px;
+        background: #ffffff;
+        transform-style: preserve-3d;
+      }
+
+      .product-frame::before {
+        content: "";
+        display: block;
+        height: 48px;
+        border-bottom: 1px solid var(--line);
+        background: linear-gradient(90deg, #eef4f7, #ffffff 52%, #f6f2ea);
+      }
+
+      .product-frame img {
+        height: calc(100% - 48px);
+      }
+
+      .scene-three .scene-inner {
+        grid-template-columns: 1.05fr 0.95fr;
+        align-items: center;
+      }
+
+      .timeline {
+        position: relative;
+        display: grid;
+        gap: 24px;
+      }
+
+      .stage {
+        position: relative;
+        display: grid;
+        grid-template-columns: 92px minmax(0, 1fr);
+        gap: 24px;
+        align-items: center;
+        min-height: 136px;
+        padding: 24px 28px;
+      }
+
+      .stage-index {
+        display: grid;
+        width: 76px;
+        height: 76px;
+        place-items: center;
+        border-radius: 8px;
+        background: var(--dark);
+        color: #f8fafc;
+        font-size: 26px;
+        font-weight: 900;
+      }
+
+      .stage strong {
+        display: block;
+        font-size: 34px;
+        line-height: 1.1;
+      }
+
+      .stage span {
+        display: block;
+        margin-top: 8px;
+        color: var(--muted);
+        font-size: 24px;
+        line-height: 1.35;
+        font-weight: 600;
+      }
+
+      .proof-layer {
+        position: relative;
+        display: grid;
+        gap: 24px;
+        align-content: center;
+      }
+
+      .proof-shot {
+        height: 470px;
+        overflow: hidden;
+        border-radius: 10px;
+      }
+
+      .queue {
+        display: grid;
+        gap: 16px;
+      }
+
+      .queue-item {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 96px;
+        align-items: center;
+        min-height: 78px;
+        padding: 0 24px;
+        font-size: 22px;
+      }
+
+      .queue-item i {
+        width: 12px;
+        height: 12px;
+        border-radius: 999px;
+        background: var(--teal);
+      }
+
+      .queue-item strong {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .queue-item span {
+        justify-self: end;
+        color: var(--muted);
+        font-weight: 900;
+      }
+
+      .scene-four {
+        align-items: center;
+        justify-content: center;
+      }
+
+      .final-layout {
+        display: grid;
+        grid-template-columns: 1fr 0.95fr;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        gap: 64px;
+      }
+
+      .final-shot {
+        position: relative;
+        height: 760px;
+        overflow: hidden;
+        border-radius: 12px;
+      }
+
+      .final-shot img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .ladder {
+        display: grid;
+        gap: 18px;
+        margin-top: 34px;
+      }
+
+      .source-row {
+        display: grid;
+        grid-template-columns: 46px minmax(0, 1fr);
+        align-items: center;
+        gap: 18px;
+        min-height: 82px;
+        padding: 0 24px;
+      }
+
+      .source-row b {
+        display: grid;
+        width: 36px;
+        height: 36px;
+        place-items: center;
+        border-radius: 8px;
+        background: rgba(14, 118, 105, 0.12);
+        color: var(--teal);
+      }
+
+      .source-row strong {
+        display: block;
+        font-size: 25px;
+      }
+
+      .source-row span {
+        display: block;
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 19px;
+        font-weight: 700;
+      }
+
+      .brand-lockup {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        margin-top: 48px;
+      }
+
+      .brand-lockup img {
+        width: 72px;
+        height: 72px;
+      }
+
+      .brand-lockup strong {
+        display: block;
+        font-size: 56px;
+        line-height: 0.95;
+      }
+
+      .brand-lockup span {
+        display: block;
+        margin-top: 8px;
+        color: var(--muted);
+        font-size: 24px;
+        font-weight: 700;
+      }
+
+      .stamp {
+        position: absolute;
+        right: 70px;
+        top: 90px;
+        z-index: 7;
+        display: grid;
+        place-items: center;
+        width: 250px;
+        height: 104px;
+        border: 5px solid var(--block);
+        border-radius: 8px;
+        color: var(--block);
+        font-size: 48px;
+        font-weight: 900;
+        letter-spacing: 0;
+        background: rgba(255, 255, 255, 0.78);
+      }
+
+      .protected-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        min-height: 52px;
+        padding: 0 18px;
+        border: 1px solid rgba(14, 118, 105, 0.24);
+        border-radius: 8px;
+        background: rgba(14, 118, 105, 0.1);
+        color: var(--teal);
+        font-size: 21px;
+        font-weight: 900;
+      }
+
+      .progress {
+        position: absolute;
+        left: 104px;
+        right: 104px;
+        bottom: 48px;
+        z-index: 20;
+        height: 6px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: rgba(36, 47, 50, 0.12);
+      }
+
+      .progress-fill {
+        width: 0;
+        height: 100%;
+        background: linear-gradient(90deg, var(--teal), var(--warn), var(--block));
+      }
+
+      audio {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      data-composition-id="pounce-product-promo"
+      data-start="0"
+      data-duration="20"
+      data-width="1920"
+      data-height="1080"
+    >
+      <div class="grain"></div>
+      <audio id="narration" src="narration.wav" data-start="0" data-duration="20" data-track-index="0" data-volume="1"></audio>
+
+      <section id="scene-1" class="scene clip scene-one" data-start="0" data-duration="4.8" data-track-index="1">
+        <div class="hero-shot panel">
+          <img src="capture/screenshots/scroll-000.png" alt="Captured Pounce website hero" />
+        </div>
+        <svg class="connector" viewBox="0 0 1920 1080" aria-hidden="true">
+          <path id="path-one" d="M 208 610 C 470 530, 660 520, 882 434 S 1288 306, 1518 360" />
+        </svg>
+        <div class="scene-inner">
+          <div>
+            <p class="eyebrow"><span class="dot"></span> Codex-native supply-chain guard</p>
+            <h1 class="headline" aria-label="Before repo state">
+              <span class="word">Before</span>
+              <span class="word">repo</span>
+              <span class="word">state.</span>
+            </h1>
+            <p class="body-copy">Dependency changes get checked before they become quiet workspace facts.</p>
+            <div class="command-strip panel mono">
+              <span class="prompt">&gt;</span>
+              <span class="typed">python3 plugins/pounce/scripts/install_local.py --workspace "$(pwd)"</span>
+            </div>
+          </div>
+        </div>
+        <div class="chips mono">
+          <span class="chip allow"><b>ALLOW</b> workspace sweep</span>
+          <span class="chip warn"><b>WARN</b> install script</span>
+          <span class="chip block"><b>BLOCK</b> seeded IOC</span>
+        </div>
+      </section>
+
+      <section id="scene-2" class="scene clip scene-two" data-start="4.8" data-duration="5" data-track-index="1">
+        <div class="scene-inner">
+          <div>
+            <p class="eyebrow"><span class="dot"></span> exact release vetting</p>
+            <h2 class="headline">Checks happen before install.</h2>
+            <div class="route-stack mono">
+              <div class="route allow panel">
+                <span class="state">allow</span>
+                <strong class="package">jose@6.2.2</strong>
+                <span class="evidence">clean</span>
+              </div>
+              <div class="route warn panel">
+                <span class="state">warn</span>
+                <strong class="package">axios@1.15.0</strong>
+                <span class="evidence">script</span>
+              </div>
+              <div class="route block panel">
+                <span class="state">block</span>
+                <strong class="package">plain-crypto-js@4.2.1</strong>
+                <span class="evidence">ioc</span>
+              </div>
+            </div>
+            <div class="metric-row">
+              <div class="metric panel mono">
+                <span>hook events</span>
+                <strong>3/3</strong>
+              </div>
+              <div class="metric panel mono">
+                <span>feed cap</span>
+                <strong>5 MiB</strong>
+              </div>
+            </div>
+          </div>
+          <div class="product-frame panel" data-layout-allow-overflow>
+            <img src="capture/assets/pounce-dashboard.png" alt="Pounce dashboard preview" />
+          </div>
+        </div>
+      </section>
+
+      <section id="scene-3" class="scene clip scene-three" data-start="9.8" data-duration="5.39" data-track-index="1">
+        <svg class="connector" viewBox="0 0 1920 1080" aria-hidden="true">
+          <path id="path-three" d="M 235 274 L 235 522 L 235 770 C 540 790, 730 704, 1018 650" />
+        </svg>
+        <div class="scene-inner">
+          <div class="timeline">
+            <p class="eyebrow"><span class="dot"></span> same-turn guardrails</p>
+            <div class="stage panel">
+              <div class="stage-index mono">01</div>
+              <div>
+                <strong>UserPromptSubmit</strong>
+                <span>Snapshot dependency manifests and lockfiles before tools run.</span>
+              </div>
+            </div>
+            <div class="stage panel">
+              <div class="stage-index mono">02</div>
+              <div>
+                <strong>PreToolUse</strong>
+                <span>Inspect install commands and block bad or non-exact specs.</span>
+              </div>
+            </div>
+            <div class="stage panel">
+              <div class="stage-index mono">03</div>
+              <div>
+                <strong>Stop</strong>
+                <span>Diff dependency files and flag unexplained edits.</span>
+              </div>
+            </div>
+          </div>
+          <div class="proof-layer">
+            <div class="proof-shot panel" data-layout-allow-overflow>
+              <img src="capture/assets/git_main.png" alt="Pounce README overview screenshot" />
+            </div>
+            <div class="queue">
+              <div class="queue-item panel mono"><strong><i></i>plain-crypto-js</strong><span>block</span></div>
+              <div class="queue-item panel mono"><strong><i></i>axios prepare hook</strong><span>warn</span></div>
+              <div class="queue-item panel mono"><strong><i></i>workspace sweep</strong><span>allow</span></div>
+              <div class="queue-item panel mono"><strong><i></i>feed trust state</strong><span>seed</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="scene-4" class="scene clip scene-four" data-start="15.2" data-duration="4.8" data-track-index="1">
+        <div class="final-layout">
+          <div class="final-shot panel" data-layout-allow-overflow>
+            <img src="capture/assets/pounce-dashboard.png" alt="Pounce dashboard final frame" />
+            <div class="stamp mono">BLOCK</div>
+          </div>
+          <div>
+            <p class="protected-pill"><span class="dot"></span> Protected workspace</p>
+            <h2 class="headline">Trust stays visible.</h2>
+            <p class="body-copy">Vet dependencies before they land.</p>
+            <div class="ladder">
+              <div class="source-row panel">
+                <b class="mono">1</b>
+                <div><strong>Hosted normalized feed</strong><span>HTTPS-only, no redirects, capped response body.</span></div>
+              </div>
+              <div class="source-row panel">
+                <b class="mono">2</b>
+                <div><strong>Local sync cache</strong><span>GitHub and OSV-derived malware intelligence.</span></div>
+              </div>
+              <div class="source-row panel">
+                <b class="mono">3</b>
+                <div><strong>Bundled seed data</strong><span>Offline fallback for first-run coverage.</span></div>
+              </div>
+            </div>
+            <div class="brand-lockup">
+              <img src="capture/assets/pounce-icon.svg" alt="Pounce icon" />
+              <div><strong>Pounce</strong><span>dependency defense for agentic coding</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="progress" aria-hidden="true"><div class="progress-fill"></div></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>
+      window.__timelines = window.__timelines || {};
+
+      var tl = gsap.timeline({ paused: true });
+
+      function showScene(selector, at) {
+        tl.set(selector, { opacity: 1 }, at);
+      }
+
+      function hideScene(selector, at) {
+        tl.to(selector, { opacity: 0, duration: 0.32, ease: "power2.in" }, at);
+        tl.set(selector, { opacity: 0 }, at + 0.34);
+      }
+
+      showScene("#scene-1", 0);
+      tl.fromTo("#scene-1 .hero-shot", { opacity: 0, x: 90, scale: 0.97 }, { opacity: 0.72, x: 0, scale: 1.02, duration: 4.45, ease: "none" }, 0);
+      tl.fromTo("#scene-1 .eyebrow", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 0.15);
+      tl.fromTo("#scene-1 .word", { opacity: 0, y: 72 }, { opacity: 1, y: 0, duration: 0.58, stagger: 0.11, ease: "power3.out" }, 0.45);
+      tl.fromTo("#scene-1 .body-copy", { opacity: 0, y: 32 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 1.15);
+      tl.fromTo("#scene-1 .command-strip", { opacity: 0, y: 34 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, 1.65);
+      tl.to("#path-one", { strokeDashoffset: 0, duration: 1.1, ease: "power2.out" }, 2.2);
+      tl.fromTo("#scene-1 .chip", { opacity: 0, y: 38 }, { opacity: 1, y: 0, duration: 0.48, stagger: 0.12, ease: "power2.out" }, 2.55);
+      tl.to("#scene-1 .dot", { scale: 1.28, boxShadow: "0 0 0 18px rgba(14, 118, 105, 0)", duration: 1.05, repeat: 3, yoyo: true, ease: "sine.inOut" }, 0.25);
+      hideScene("#scene-1", 4.48);
+
+      showScene("#scene-2", 4.8);
+      tl.fromTo("#scene-2 .eyebrow", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 4.95);
+      tl.fromTo("#scene-2 .headline", { opacity: 0, x: -70 }, { opacity: 1, x: 0, duration: 0.55, ease: "power3.out" }, 5.08);
+      tl.fromTo("#scene-2 .route", { opacity: 0, x: -90 }, { opacity: 1, x: 0, duration: 0.48, stagger: 0.16, ease: "power3.out" }, 5.65);
+      tl.fromTo("#scene-2 .product-frame", { opacity: 0, x: 90, rotationY: -10, rotationX: 4 }, { opacity: 1, x: 0, rotationY: -5, rotationX: 2, duration: 0.72, ease: "power3.out" }, 5.35);
+      tl.to("#scene-2 .product-frame img", { scale: 1.035, duration: 4.1, ease: "none" }, 5.35);
+      tl.fromTo("#scene-2 .metric", { opacity: 0, y: 32 }, { opacity: 1, y: 0, duration: 0.45, stagger: 0.12, ease: "power2.out" }, 6.65);
+      hideScene("#scene-2", 9.48);
+
+      showScene("#scene-3", 9.8);
+      tl.fromTo("#scene-3 .eyebrow", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.38, ease: "power2.out" }, 10.0);
+      tl.to("#path-three", { strokeDashoffset: 0, duration: 1.12, ease: "power2.out" }, 10.25);
+      tl.fromTo("#scene-3 .stage", { opacity: 0, x: -70 }, { opacity: 1, x: 0, duration: 0.48, stagger: 0.22, ease: "power3.out" }, 10.25);
+      tl.fromTo("#scene-3 .proof-shot", { opacity: 0, y: 62, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: "power3.out" }, 10.68);
+      tl.to("#scene-3 .proof-shot img", { scale: 1.04, duration: 4.1, ease: "none" }, 10.68);
+      tl.fromTo("#scene-3 .queue-item", { opacity: 0, x: 62 }, { opacity: 1, x: 0, duration: 0.38, stagger: 0.12, ease: "power2.out" }, 11.55);
+      tl.to("#scene-3 .stage-index", { y: -5, duration: 0.7, repeat: 5, yoyo: true, ease: "sine.inOut" }, 10.5);
+      hideScene("#scene-3", 14.88);
+
+      showScene("#scene-4", 15.2);
+      tl.fromTo("#scene-4 .final-shot", { opacity: 0, scale: 0.94, x: -60 }, { opacity: 1, scale: 1, x: 0, duration: 0.68, ease: "power3.out" }, 15.32);
+      tl.to("#scene-4 .final-shot img", { scale: 1.035, duration: 4.2, ease: "none" }, 15.32);
+      tl.fromTo("#scene-4 .protected-pill", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.38, ease: "power2.out" }, 15.58);
+      tl.fromTo("#scene-4 .headline", { opacity: 0, y: 54 }, { opacity: 1, y: 0, duration: 0.55, ease: "power3.out" }, 15.82);
+      tl.fromTo("#scene-4 .body-copy", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.42, ease: "power2.out" }, 16.28);
+      tl.fromTo("#scene-4 .source-row", { opacity: 0, x: 58 }, { opacity: 1, x: 0, duration: 0.42, stagger: 0.14, ease: "power2.out" }, 16.62);
+      tl.fromTo("#scene-4 .stamp", { opacity: 0, scale: 1.42, rotation: -7 }, { opacity: 1, scale: 1, rotation: -3, duration: 0.34, ease: "back.out(1.8)" }, 17.55);
+      tl.fromTo("#scene-4 .brand-lockup", { opacity: 0, y: 32 }, { opacity: 1, y: 0, duration: 0.55, ease: "power2.out" }, 18.3);
+      tl.to("#scene-4 .dot", { scale: 1.22, boxShadow: "0 0 0 16px rgba(14, 118, 105, 0)", duration: 1.0, repeat: 3, yoyo: true, ease: "sine.inOut" }, 15.58);
+      tl.to("#scene-4", { opacity: 0.94, duration: 0.45, ease: "sine.inOut" }, 19.55);
+
+      tl.to(".progress-fill", { width: "100%", duration: 20, ease: "none" }, 0);
+
+      window.__timelines["pounce-product-promo"] = tl;
+
+      if (!window.__HYPERFRAMES_PLAYER__) {
+        tl.play(0);
+      }
+    </script>
+  </body>
+</html>

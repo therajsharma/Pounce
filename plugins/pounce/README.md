@@ -18,7 +18,15 @@ Pounce is built for the exact place where AI coding agents create supply-chain r
 - managed workspace hooks and policy injection
 - refreshable threat-intelligence feeds with bundled fallback data
 
-For a quick local evaluation, the fastest path is:
+For a team install, add the GitHub-backed marketplace and install Pounce from Codex:
+
+```bash
+codex plugin marketplace add therajsharma/Pounce --ref main
+```
+
+Then open a new Codex session, run `/plugins`, choose `Local Security Plugins`, and install `Pounce`. For a stable rollout, publish a release tag and use that tag instead of `main`.
+
+For a quick local development evaluation, the fastest path is:
 
 ```bash
 python3 plugins/pounce/scripts/install_local.py --workspace "$(pwd)"
@@ -37,7 +45,35 @@ Reference docs:
 - [`docs/pounce-final-spec.md`](../../docs/pounce-final-spec.md)
 - [`docs/getting-started.md`](../../docs/getting-started.md)
 
-## Local install
+## Team install from GitHub
+
+The repository includes a Codex marketplace file at `.agents/plugins/marketplace.json`, so teammates do not need to clone the repository just to install Pounce.
+
+```bash
+codex plugin marketplace add therajsharma/Pounce --ref main
+```
+
+Open a new Codex session, then run:
+
+```text
+/plugins
+```
+
+Choose `Local Security Plugins`, search for `Pounce`, and install it. If you cut a release tag, prefer a pinned install:
+
+```bash
+codex plugin marketplace add therajsharma/Pounce --ref v0.1.0
+```
+
+If the command fails with `ENOENT` for a missing `node_modules/@openai/codex-darwin-arm64/.../codex` binary, repair the local Codex CLI install and try again:
+
+```bash
+npm uninstall -g @openai/codex
+npm install -g @openai/codex@0.130.0
+codex plugin marketplace add therajsharma/Pounce --ref main
+```
+
+## Local development install
 
 From the repository root:
 

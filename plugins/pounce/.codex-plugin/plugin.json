@@ -7,8 +7,8 @@
     "email": "rajbuzzz2020@gmail.com",
     "url": "https://github.com/therajsharma"
   },
-  "homepage": "https://github.com/therajsharma/Project-Zero",
-  "repository": "https://github.com/therajsharma/Project-Zero",
+  "homepage": "https://github.com/therajsharma/Pounce",
+  "repository": "https://github.com/therajsharma/Pounce",
   "license": "MIT",
   "keywords": [
     "security",
@@ -31,7 +31,7 @@
       "Read",
       "Write"
     ],
-    "websiteURL": "https://github.com/therajsharma/Project-Zero",
+    "websiteURL": "https://github.com/therajsharma/Pounce",
     "defaultPrompt": [
       "Vet plain-crypto-js@4.2.1 before adding it to this project",
       "Show the Pounce dashboard for this workspace",
