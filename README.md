@@ -18,6 +18,8 @@ codex plugin marketplace add therajsharma/Pounce --ref main
 
 Then open a new Codex session, run `/plugins`, choose `Local Security Plugins`, and install `Pounce`.
 
+After Pounce is installed and enabled, its first hook invocation bootstraps the active workspace automatically: it adds the managed `AGENTS.md` policy, writes `.codex/hooks.json`, and enables `codex_hooks = true` in `.codex/config.toml`. Users do not need to clone this repository or run `install_local.py` for normal Marketplace installs.
+
 For local development from this repository:
 
 ```bash

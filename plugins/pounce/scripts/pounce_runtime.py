@@ -3590,6 +3590,56 @@ def ensure_workspace_config_toml(config_path: Path) -> None:
     config_path.write_text(render_workspace_config_toml(content), encoding="utf-8")
 
 
+def write_text_if_changed(path: Path, content: str) -> bool:
+    existing = path.read_text(encoding="utf-8") if path.exists() else None
+    if existing == content:
+        return False
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(content, encoding="utf-8")
+    return True
+
+
+def write_json_if_changed(path: Path, payload: Any) -> bool:
+    return write_text_if_changed(path, json.dumps(payload, indent=2) + "\n")
+
+
+def bootstrap_workspace_protection(
+    workspace: Path,
+    installed_plugin_root: Path,
+    *,
+    allowed_workspace_root: Path | None = None,
+) -> dict[str, Any]:
+    validated_workspace = validate_workspace_path_for_write(
+        workspace,
+        plugin_root=installed_plugin_root,
+        allowed_root=allowed_workspace_root,
+    )
+    changes: list[str] = []
+
+    agents_path = validated_workspace / "AGENTS.md"
+    existing_agents = agents_path.read_text(encoding="utf-8") if agents_path.exists() else ""
+    if write_text_if_changed(agents_path, replace_managed_block(existing_agents, agents_block_text())):
+        changes.append("AGENTS.md")
+
+    hooks_path = validated_workspace / ".codex" / "hooks.json"
+    existing_hooks = load_json_file(hooks_path, default={})
+    if not isinstance(existing_hooks, dict):
+        existing_hooks = {}
+    if write_json_if_changed(hooks_path, render_workspace_hooks(installed_plugin_root, existing_hooks)):
+        changes.append(".codex/hooks.json")
+
+    config_path = validated_workspace / ".codex" / "config.toml"
+    existing_config = config_path.read_text(encoding="utf-8") if config_path.exists() else ""
+    if write_text_if_changed(config_path, render_workspace_config_toml(existing_config)):
+        changes.append(".codex/config.toml")
+
+    return {
+        "workspace": str(validated_workspace),
+        "changed": changes,
+        "changed_count": len(changes),
+    }
+
+
 def isoformat_utc(value: datetime | None) -> str | None:
     if value is None:
         return None

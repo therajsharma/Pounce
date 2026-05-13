@@ -26,6 +26,8 @@ codex plugin marketplace add therajsharma/Pounce --ref main
 
 Then open a new Codex session, run `/plugins`, choose `Local Security Plugins`, and install `Pounce`. For a stable rollout, publish a release tag and use that tag instead of `main`.
 
+When installed through the Marketplace, Pounce does not rely on `install_local.py`. Once the user enables the plugin and starts a Codex session in a repository, the plugin hook bootstraps that workspace on first use by adding the managed `AGENTS.md` policy, `.codex/hooks.json`, and `.codex/config.toml` with `codex_hooks = true`.
+
 For a quick local development evaluation, the fastest path is:
 
 ```bash
@@ -64,6 +66,8 @@ Choose `Local Security Plugins`, search for `Pounce`, and install it. If you cut
 ```bash
 codex plugin marketplace add therajsharma/Pounce --ref v0.1.0
 ```
+
+Open or restart Codex in the target repo after enabling the plugin. The first prompt in that repo triggers Pounce's `UserPromptSubmit` hook, which makes the workspace protection durable by writing the same managed policy, hook config, and `codex_hooks` setting that the local development installer writes.
 
 If the command fails with `ENOENT` for a missing `node_modules/@openai/codex-darwin-arm64/.../codex` binary, repair the local Codex CLI install and try again:
 

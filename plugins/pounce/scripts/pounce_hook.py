@@ -10,6 +10,7 @@ from pathlib import Path
 from pounce_runtime import (
     assess_dependency_command,
     assess_dependency_guard,
+    bootstrap_workspace_protection,
     plugin_root_from_script,
     record_dependency_guard_allowlist,
     snapshot_dependency_guard,
@@ -57,6 +58,8 @@ def process_payload(payload: dict[str, object], script_file: str = __file__) -> 
         )
     except ValueError:
         return block_hook_payload(HOOK_MALFORMED_INPUT_MESSAGE, hook_event_name=hook_event_name)
+
+    bootstrap_workspace_protection(workspace, plugin_root, allowed_workspace_root=workspace)
 
     turn_id = payload_turn_id(payload)
 

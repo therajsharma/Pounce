@@ -28,6 +28,14 @@ Choose `Local Security Plugins`, search for `Pounce`, and install it. For a stab
 codex plugin marketplace add therajsharma/Pounce --ref v0.1.0
 ```
 
+After Pounce is installed and enabled, open or restart a Codex session in the target repository. The first Pounce hook invocation bootstraps that workspace by writing:
+
+- `AGENTS.md` with the managed Pounce policy block
+- `.codex/hooks.json` with the Pounce `UserPromptSubmit`, `PreToolUse`, and `Stop` hooks
+- `.codex/config.toml` with `codex_hooks = true`
+
+This is the Marketplace path for teammates. They do not need a local Pounce checkout or the development installer.
+
 ### If the marketplace command fails with `ENOENT`
 
 If `codex plugin marketplace add ...` fails while trying to spawn a missing path under `node_modules/@openai/codex-darwin-arm64`, the local Codex CLI install is incomplete. Repair Codex first, then rerun the marketplace command:

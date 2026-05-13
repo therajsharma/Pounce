@@ -127,6 +127,38 @@ def run_hook_smoke() -> dict[str, Any]:
     return make_check("shell hook denies risky dependency install", passed, detail)
 
 
+def run_marketplace_bootstrap_smoke() -> dict[str, Any]:
+    with tempfile.TemporaryDirectory() as tmpdir:
+        workspace = Path(tmpdir)
+        (workspace / "package.json").write_text(json.dumps({"dependencies": {"demo": "1.0.0"}}), encoding="utf-8")
+        result = pounce_hook.process_payload(
+            {
+                "hook_event_name": "UserPromptSubmit",
+                "cwd": str(workspace),
+                "session_id": "marketplace-bootstrap",
+                "prompt": "show the pounce dashboard",
+            },
+            script_file=str(SCRIPTS_ROOT / "pounce_hook.py"),
+        )
+        dashboard = pounce_runtime.build_dashboard_snapshot({"workspace": str(workspace)}, PLUGIN_ROOT)
+        workspace_snapshot = dashboard["workspace"]
+
+    passed = (
+        result is None
+        and workspace_snapshot.get("protection_status") == "protected"
+        and workspace_snapshot.get("managed_policy") is True
+        and workspace_snapshot.get("hooks_configured", {}).get("all_events") is True
+        and workspace_snapshot.get("hooks_enabled") is True
+    )
+    return make_check(
+        "marketplace hook bootstraps workspace protection",
+        passed,
+        "First hook invocation created AGENTS policy, workspace hooks, and codex_hooks config."
+        if passed
+        else f"Workspace status was `{workspace_snapshot.get('protection_status', 'unknown')}`.",
+    )
+
+
 def run_dependency_guard_smoke() -> list[dict[str, Any]]:
     checks: list[dict[str, Any]] = []
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -314,6 +346,7 @@ def run_demo() -> dict[str, Any]:
     checks.extend(run_release_vet_smoke())
     checks.append(run_workspace_sweep_smoke())
     checks.append(run_hook_smoke())
+    checks.append(run_marketplace_bootstrap_smoke())
     checks.extend(run_dependency_guard_smoke())
     checks.append(run_installer_smoke())
     checks.append(run_mcp_smoke())

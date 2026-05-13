@@ -17,7 +17,7 @@ import pounce_hook  # noqa: E402
 
 
 class PounceHookTests(unittest.TestCase):
-    def test_user_prompt_submit_creates_snapshot(self) -> None:
+    def test_user_prompt_submit_creates_snapshot_and_bootstraps_workspace(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             workspace = Path(tmpdir)
             (workspace / "package.json").write_text(
@@ -34,8 +34,15 @@ class PounceHookTests(unittest.TestCase):
                 script_file=str(SCRIPTS_ROOT / "pounce_hook.py"),
             )
             state_path = workspace / ".pounce" / "guard" / "turn-session-1.json"
+            agents_text = (workspace / "AGENTS.md").read_text(encoding="utf-8")
+            hooks_payload = json.loads((workspace / ".codex" / "hooks.json").read_text(encoding="utf-8"))
+            config_text = (workspace / ".codex" / "config.toml").read_text(encoding="utf-8")
             self.assertIsNone(result)
             self.assertTrue(state_path.exists())
+            self.assertIn("BEGIN POUNCE MANAGED BLOCK", agents_text)
+            self.assertIn("codex_hooks = true", config_text)
+            self.assertIn("PreToolUse", hooks_payload["hooks"])
+            self.assertIn(str(SCRIPTS_ROOT / "pounce_hook.py"), json.dumps(hooks_payload))
 
     def test_pre_tool_use_records_allowlist_for_vetted_install(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
